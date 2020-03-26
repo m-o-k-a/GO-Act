@@ -69,10 +69,15 @@ app.post('/sign-up', (req, res) => {
 app.get('/dashboard', is_authenticated, (req, res) => {
   if(res.locals.authenticated) { 
     var user = model.fetchUserInformations(req.session.user);
-    console.log(user);
-    res.render('dashboard'); 
+    res.render('dashboard', {name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
   }
   else { res.redirect('/'); }
+});
+
+/* déconnexion */
+app.get('/logout', is_authenticated_force, (req, res) => {
+  req.session.user = null;
+  res.redirect('/'); 
 });
 
 app.listen(3000, () => console.log('listening on http://localhost:3000'));

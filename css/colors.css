@@ -1,0 +1,27 @@
+/**** CSS relatif aux couleurs ****/
+
+/* Background */
+.bkg-primary {
+	background-color: darkgreen;
+}
+.bkg-hover-primary:hover {
+	background-color: forestgreen;
+}
+.bkg-second {
+	background-color: seagreen;
+}
+.bkg-hover-second:hover {
+	background-color: mediumseagreen;
+}
+.bkg-third {
+	background-color: springgreen;
+}
+.bkg-hover-third:hover {
+	background-color: mediumspringgreen;
+}
+
+/*
+PRIMARY : darkgreen (forestgreen)
+SECOND : seagreen (mediumseagreen)
+THIRD : springgreen (mediumspringgreen)
+*/

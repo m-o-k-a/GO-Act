@@ -1,0 +1,14 @@
+/**** CSS relatif ux élements ****/
+.jumbotron {
+	background: rgba(255,255, 255, 0.25);
+}
+
+.card {
+	width: 18rem; 
+	margin:0 auto;
+}
+
+a {
+	text-decoration: none; 
+	text-align: center;
+}

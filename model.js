@@ -20,7 +20,7 @@ exports.new_user = (name, email, password) => {
 
 /* Fonctions relatives a l'accès de données utilisateur */
 exports.fetchUserInformations = (id) => {
-	var user = db.prepare('SELECT name, email, lvl, heartReceived, heartGiven, brokenHeartReceived, brokenheartGiven, messageCount, commentCount fanlvl FROM users WHERE (id = ?)').get(id);
+	var user = db.prepare('SELECT name, email, lvl, fanlvl, heartReceived, heartGiven, brokenHeartReceived, brokenheartGiven, messageCount, commentCount FROM users WHERE (id = ?)').get(id);
   	return user;
 }
 

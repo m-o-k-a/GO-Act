@@ -1,0 +1,25 @@
+{{> animations}}
+{{> header}}
+
+<div class="text-center jumbotron mx-auto" style="background: rgba(255,255, 255, 0.25);">
+  <img class="mb-4" id="logo-notext-slow" src="/logo-notext-nobkg.png" alt="" width="100" height="100">
+    <h1 class="h3 mb-3 font-weight-normal">GO'Act!</h1>
+    <p class="mb-3 font-weight-normal"><i>#1 Social Network on good action!</i></p>
+    <div style="width: 25%; margin: 0 auto;">
+    <form class="form-signin" action="sign-in" method="POST">
+      <h1 class="h3 mb-3 font-weight-normal">Newcomers, Welcome!</h1>
+      <input type="text" id="inputName" class="form-control form-control-sm" placeholder="Name">
+      <br>
+      <input type="email" id="inputEmail" class="form-control form-control-sm" placeholder="Email address">
+      <br>
+      <input type="password" id="inputPassword" class="form-control form-control-sm" placeholder="Password">
+      <br>
+      <input type="password" id="inputPassword" class="form-control form-control-sm" placeholder="Confirm Password">
+      <br>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" style="background-color: darkgreen;">Sign up</button>
+      <a href="sign-in" style="text-decoration: none;"><i>Already have an account? Sign in</i></a>
+    </form>
+  </div>
+</div>
+
+{{> footer}}

@@ -15,7 +15,7 @@ exports.new_user = (name, email, password) => {
 	//car auto increment marche pas
 	var rowCount = db.prepare('SELECT COUNT(id) count FROM USERS');
   	var add = db.prepare('INSERT INTO users (id, name, email, password, lvl, fanlvl, heartReceived, brokenHeartReceived, heartGiven, brokenheartGiven, messageCount, commentCount, userCategory) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').run(rowCount.get().count, name, email, password, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  	return add.lastInsertRowid;
+  	return add.lastInsertRowid-1;
 }
 
 /* Fonctions relatives a l'accès de données utilisateur */

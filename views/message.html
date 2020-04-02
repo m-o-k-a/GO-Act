@@ -1,0 +1,59 @@
+{{> header}}
+
+<div class="jumbotron mx-auto m-0 p-0">
+  <div class="d-sm-flex justify-content-start align-items-center user-info m-0 p-0">
+    <div class="p-2">
+      <img class="mb-3" src="/lvl/lvl0.png" alt="" width="100" height="100">
+    </div>
+    <div class="p-2 text-left">
+      <h4><a href="user/{{id}}" class="text-center text-first text-hover-first">{{name}}</a></h4>
+          <p class="f-vsm text-third">
+            level: {{lvl}}
+            <br>
+            <i>fan level: {{fanlvl}}</i>
+            <br>
+            💕 {{hg}}/{{hr}} 
+            💔 {{bhg}}/{{bhr}}
+          </p>
+    </div>
+    <div class="ml-auto p-2 d-sm-flex justify-content-start align-items-center user-info m-0 p-0">
+      <div class="p-2">
+        <a href="/dashboard" class="btn btn-primary btn-lg bkg-second bkg-hover-second">Home</a>
+      </div>
+      <div class="ml-auto p-2">
+        <a href="logout" class="btn btn-primary btn-lg bkg-second bkg-hover-second">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="jumbotron mx-auto m-0 p-0 text-center">
+  <b><a href="leaderboards" class="text-second text-hover-second">Access the Leaderboards and see the best Go'Actors!</a></b>
+</div>
+<br>
+<div class="jumbotron pt-4">
+    <h6 class="text-first">Go'Action! From {{message.userName}} | {{message.date}}</h6>
+    <hr>
+</div>
+<br>
+<div class="jumbotron mx-auto pt-4">
+  <div class="messagesBox-send">
+    <h6 class="text-first">Share:</h6>
+    <hr>
+    <form id="form_message" action="send-message" method="POST">
+        <div class="row align-items-start">
+          <div class="col-lg">
+            <p class="text-second">Message:</h6>
+          <textarea id="message_content" name="message_content" form="form_message" class="text-third w-100" spellcheck=true maxlength="240" rows="3" placeholder="I saved a panda today! Then fed it with bamboo, 나는 판다를 좋아해! (-^〇^-)" required></textarea>
+          </div>
+          <div class="col-sm">
+          <p class="text-second">Category:</h6>
+        <textarea id="message_category" name="message_category" form="form_message" class="text-third w-100" spellcheck=true maxlength="24" rows="1" placeholder="animal" required></textarea>
+        <button class="btn btn-lg btn-primary btn-block bkg-second bkg-hover-second" type="submit">Submit</button>
+          </div>
+        </div>
+      </form>
+  </div>
+</div>
+
+{{> footer}}

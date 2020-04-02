@@ -31,23 +31,6 @@
 	<b><a href="leaderboards" class="text-second text-hover-second">Access the Leaderboards and see the best Go'Actors!</a></b>
 </div>
 <br>
-<div class="jumbotron pt-4">
-		<h6 class="text-first">Latest Messages:</h6>
-		<hr>
-		<div class="overflow-auto w-100 scrollable messages-list">
-			{{#messages}}
-				<div class="card w-100 messages card-message">
-  					<div class="card-header text-first"><a href="user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
-  					<div class="card-body">
-    					<a href="message/{{id}}"><p class="card-text text-second">{{content}}</p></a><hr>
-    					<a href="message/{{id}}"><p class="card-text text-third"><i>category: {{category}}</i> | 💕{{heart}} 💔{{brokenheart}}</p></a>
-    				</div>
-    			</div>
-    			<br>
-			{{/messages}}
-	</div>
-</div>
-<br>
 <div class="jumbotron mx-auto pt-4">
 	<div class="messagesBox-send">
 		<h6 class="text-first">Share:</h6>
@@ -65,6 +48,23 @@
     			</div>
   			</div>
     	</form>
+	</div>
+</div>
+<br>
+<div class="jumbotron pt-4">
+		<h6 class="text-first">Latest Messages:</h6>
+		<hr>
+		<div class="w-100">
+			{{#messages}}
+				<div class="card w-100 messages card-message">
+  					<div class="card-header text-first"><a href="user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
+  						<a href="message/{{id}}"><div class="card-body">
+    						<p class="card-text text-second">{{content}}</p><hr>
+    						<p class="card-text text-third"><i>category: {{category}}</i> | 💕{{heart}} 💔{{brokenheart}}</p>
+    					</div></a>
+    			</div>
+    			<br>
+			{{/messages}}
 	</div>
 </div>
 

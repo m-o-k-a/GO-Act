@@ -19,3 +19,15 @@
   	transition-duration: 0.4s;
   	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
+
+/*Animation de survolage des messages pour les selectionner*/
+.card-message {
+	-webkit-transition-duration: 0.4s;
+  	transition-duration: 0.4s;
+  	background: rgba(255, 255, 255, 0.25);
+}
+.card-message:hover { 
+	-webkit-transition-duration: 0.4s;
+  	transition-duration: 0.4s;
+	background: rgba(60,179,113, 0.25); 
+}

@@ -14,14 +14,34 @@
 	background-color: mediumseagreen;
 }
 .bkg-third {
-	background-color: springgreen;
+	background-color: olivedrab;
 }
 .bkg-hover-third:hover {
-	background-color: mediumspringgreen;
+	background-color: darkolivegreen;
+}
+
+/* Text */
+.text-first {
+	color: darkgreen;
+}
+.text-hover-first:hover {
+	color: forestgreen;
+}
+.text-second {
+	color: seagreen;
+}
+.text-hover-second:hover {
+	color: mediumseagreen;
+}
+.text-third {
+	color: olivedrab;
+}
+.text-hover-third:hover {
+	color: darkolivegreen;
 }
 
 /*
 PRIMARY : darkgreen (forestgreen)
 SECOND : seagreen (mediumseagreen)
-THIRD : springgreen (mediumspringgreen)
+THIRD : 	olivedrab (darkolivegreen)
 */

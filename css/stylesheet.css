@@ -1,4 +1,6 @@
 /**** CSS relatif ux élements ****/
+body::-webkit-scrollbar { display: none; }
+
 .jumbotron {
 	background: rgba(255,255, 255, 0.25);
 }
@@ -8,7 +10,35 @@
 	margin:0 auto;
 }
 
-a {
-	text-decoration: none; 
-	text-align: center;
+a { text-decoration: none; }
+a:hover { text-decoration: none; }
+
+.user-info {
+}
+
+.f-vsm { /*font - very small*/
+	font-size: 0.75em;
+}
+
+.messages { background: rgba(255, 255, 255, 0.25); border: 1px solid silver; }
+.messages-list { border: 1px seagreen; border-radius: 1%; padding-top: 2%; border-style: solid none solid none;}
+.messages-list::-webkit-scrollbar { width: 8px; }
+.messages-list::-webkit-scrollbar-track { 
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+.messages-list::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: silver; 
+}
+
+.scrollable {
+	height: 28em;
+  	overflow: auto;
+}
+
+textarea {
+	background: rgba(255, 255, 255, 0.25);
+	resize:none;
 }

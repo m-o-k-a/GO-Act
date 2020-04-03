@@ -75,20 +75,38 @@ app.get('/dashboard', is_authenticated, (req, res) => {
   else { res.redirect('/'); }
 });
 
+/* Page user */
+app.get('/user/:id', is_authenticated, (req, res) => {
+  if(res.locals.authenticated && model.getMessage(req.params.id) != null) { 
+    var viewUser = model.getUser(req.params.id);
+    var user = model.fetchUserInformations(req.session.user);
+    res.render('message', {id: req.session.user, viewUserName: viewUser.name, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
+  }
+  else { res.redirect('/'); }
+});
+
 /* Envoi de message */
 app.post('/send-message', (req, res) => {
-  if (id == -1) { res.redirect('/sign-up'); }
-  var id = model.new_message(req.session.user, req.body.message_content, req.body.message_category.toLowerCase());
+  if (req.session.user == -1) { res.redirect('/'); }
+  var messageId = model.new_message(req.session.user, req.body.message_content, req.body.message_category.toLowerCase());
   res.redirect('/dashboard');
+});
+
+app.post('/send-comment/:id', (req, res) => {
+  if (req.session.user == -1) { res.redirect('/'); }
+  var user = model.getUser(req.session.user);
+  var comment = model.new_comment(req.session.user, req.params.id, req.body.comment_content);
+  var message = model.getMessage(req.params.id);
+  res.redirect('/message/'+req.params.id);
 });
 
 /* Page de message */
 app.get('/message/:id', is_authenticated, (req, res) => {
-  //ENCORE LE PROBLEME QUI DECIDE DE AUSSI FAIRE LA REQUETE SUR LES CSS MAIS JE NE SAIS PAS POURQUOI IL FAIT CA UNIQUEMENT ICI
-  if(res.locals.authenticated && model.getMessage(req.params.id) != -1 && req.params.id != "animations.css"  && req.params.id != "stylesheet.css"  && req.params.id != "colors.css") { 
+  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) { 
     var message = model.getMessage(req.params.id);
+    var comment = model.getComments(message.id);
     var user = model.fetchUserInformations(req.session.user);
-    res.render('message', {id: req.session.user, messageInfo: message, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
+    res.render('message', {messageData: message, commentData: comment, id: req.session.user, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
   }
   else { res.redirect('/'); }
 });

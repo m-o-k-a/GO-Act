@@ -32,28 +32,44 @@
 </div>
 <br>
 <div class="jumbotron pt-4">
-    <h6 class="text-first">Go'Action! From {{message.userName}} | {{message.date}}</h6>
+    <h6 class="text-first">Go'Action! From {{messageData.userName}} | {{messageData.date}}</h6>
     <hr>
+    <div class="card w-100 messages">
+      <div class="card-body">
+        <p class="card-text text-second">{{messageData.content}}</p><hr>
+        <p class="card-text text-third"><i>category: {{messageData.category}}</i> | 💕{{messageData.heart}} 💔{{messageData.brokenheart}}</p>
+      </div>
+    </div>
+  <div class="messagesBox-send">
+  <hr>
+  <form id="form_comment" action="/send-comment/{{messageData.id}}" method="POST">
+    <div class="row align-items-start">
+      <div class="col-lg">
+        <textarea id="comment_content" name="comment_content" form="form_comment" class="text-third w-100" spellcheck=true maxlength="240" rows="2" placeholder="What an inspiring Go'Action ! I want to do the same! 谢谢!" required></textarea>
+      </div>
+      <div class="col-sm">
+          <button class="btn btn-lg btn-primary btn-block bkg-third bkg-hover-third" type="submit">Comment!</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 <br>
-<div class="jumbotron mx-auto pt-4">
-  <div class="messagesBox-send">
-    <h6 class="text-first">Share:</h6>
+<div class="jumbotron pt-4">
+    <h6 class="text-second">Comments:</h6>
     <hr>
-    <form id="form_message" action="send-message" method="POST">
-        <div class="row align-items-start">
-          <div class="col-lg">
-            <p class="text-second">Message:</h6>
-          <textarea id="message_content" name="message_content" form="form_message" class="text-third w-100" spellcheck=true maxlength="240" rows="3" placeholder="I saved a panda today! Then fed it with bamboo, 나는 판다를 좋아해! (-^〇^-)" required></textarea>
+    <div class="w-100">
+      {{#commentData}}
+        <div class="card w-100 messages">
+            <div class="card-header text-third"><a href="/user/{{userId}}" class="text-third text-hover-third"><u>{{userName}}</u></a> | {{date}}</div>
+              <div class="card-body">
+                <p class="card-text text-third">{{content}}</p><hr>
+                <p class="card-text text-third">💕{{heart}} 💔{{brokenheart}}</p>
+              </div>
           </div>
-          <div class="col-sm">
-          <p class="text-second">Category:</h6>
-        <textarea id="message_category" name="message_category" form="form_message" class="text-third w-100" spellcheck=true maxlength="24" rows="1" placeholder="animal" required></textarea>
-        <button class="btn btn-lg btn-primary btn-block bkg-second bkg-hover-second" type="submit">Submit</button>
-          </div>
-        </div>
-      </form>
-  </div>
+          <br>
+      {{/commentData}}
+    </div>
 </div>
 
 {{> footer}}

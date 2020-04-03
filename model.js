@@ -7,7 +7,6 @@ let db = new Sqlite('db.sqlite');
 exports.login = (email, password) => {
   var login = db.prepare('SELECT id FROM users WHERE (email = ? AND password = ?)').get(email, password);
   if(login == undefined) return -1;
-  console.log(login.id);
   return login.id;
 }
 
@@ -34,6 +33,11 @@ function getName(id) {
     return user.name;
 }
 
+exports.getUser = (id) => {
+  var user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+  if(user != -1) return user;
+}
+
 /* Fonctions relatives a l'accès de données messages */
 exports.new_message = (userId, message, category) => {
   //car auto increment marche pas
@@ -42,6 +46,24 @@ exports.new_message = (userId, message, category) => {
   var userName = getName(userId);
   if (userName == -1) return;
   var add = db.prepare('INSERT INTO messages (id, userName, userID, date, content, category, heart, brokenheart) VALUES(?, ?, ?, ?, ?, ?, ?, ?)').run(rowCount.get().count, userName, userId, date, message, category, 0, 0);
+  var userMessages = db.prepare('SELECT messageCount from users where id = ?').get(userId);
+  userMessages = userMessages.messageCount;
+  userMessages++;
+  db.prepare('UPDATE users SET messageCount = ? where id = ?').run(userMessages, userId);
+}
+
+exports.new_comment = (userId, messageId, comment) => {
+  //car auto increment marche pas
+  if (userId == -1 || messageId == -1) return;
+  var rowCount = db.prepare('SELECT COUNT(id) count FROM comments where messageId = ?').get(messageId);
+  var date = todayDate();
+  var userName = getName(userId);
+  var add = db.prepare('INSERT INTO comments (id, messageId, userName, userID, date, content, heart, brokenheart) VALUES(?, ?, ?, ?, ?, ?, ?, ?)').run(rowCount.count, messageId, userName, userId, date, comment, 0, 0);
+  var userComments = db.prepare('SELECT commentCount from users where id = ?').get(userId);
+  console.log(userComments);
+  userComments = userComments.commentCount;
+  userComments++;
+  db.prepare('UPDATE users SET commentCount = ? where id = ?').run(userComments, userId);
 }
 
 exports.getMessages = () => {
@@ -51,8 +73,12 @@ exports.getMessages = () => {
 
 exports.getMessage = (id) => {
   var message = db.prepare('SELECT * FROM messages WHERE id = ?').get(id);
-  console.log(message);
   if(message != -1) return message;
+}
+
+exports.getComments = (id) => {
+  var comments = db.prepare('SELECT * FROM comments WHERE messageid = ? ORDER BY id DESC').all(id);
+  if(comments != -1) return comments;
 }
 
 /* Fonctions relatives a l'accès de données des coeurs */
@@ -60,7 +86,6 @@ exports.heart = (userId, messageId) => {
   var messageAdd = db.prepare('INSERT INTO heartref (userId, messageId) VALUES(?, ?)').run(userId, messageId);
   var messageHeart = db.prepare('SELECT heart FROM messages WHERE id = ?').get(Id);
   messageHeart = messageHeart.heart++;
-  console.log(messageHeart);
 }
 
 

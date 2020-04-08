@@ -66,6 +66,11 @@ exports.new_comment = (userId, messageId, comment) => {
   db.prepare('UPDATE users SET commentCount = ? where id = ?').run(userComments, userId);
 }
 
+exports.getMessagesFrom = (id) => {
+    var messagesfrom = db.prepare('SELECT * FROM messages WHERE userId = ?').all(id);
+    if (messagesfrom != -1) return messagesfrom;
+}
+
 exports.getMessages = () => {
   var messages = db.prepare('SELECT * FROM messages ORDER BY id DESC').all();
   if(messages != -1) return messages;

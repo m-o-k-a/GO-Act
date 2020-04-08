@@ -93,6 +93,48 @@ exports.heart = (userId, messageId) => {
   messageHeart = messageHeart.heart++;
 }
 
+/* Fonctions leaderboards */
+/* TODO A FACTORISER AVEC PARAMS */
+exports.goCount = () => {
+  var goCount = db.prepare('SELECT name, id, messageCount FROM users WHERE messageCount > 0 ORDER BY messageCount DESC LIMIT 10').all();
+  if(goCount != -1) return goCount;
+}
+
+exports.goLike = () => {
+  var goLike = db.prepare('SELECT name, id, heartReceived FROM users WHERE heartReceived > 0 ORDER BY heartReceived DESC LIMIT 10').all();
+  if(goLike != -1) return goLike;
+}
+
+exports.notLike = () => {
+  var notLike = db.prepare('SELECT name, id, brokenheartReceived FROM users WHERE brokenheartReceived > 0 ORDER BY brokenheartReceived DESC LIMIT 10').all();
+  if(notLike != -1) return notLike;
+}
+
+exports.goFan = () => {
+  var goFan = db.prepare('SELECT name, id, heartGiven FROM users WHERE heartGiven > 0 ORDER BY heartGiven DESC LIMIT 10').all();
+  if(goFan != -1) return goFan;
+}
+
+exports.notFan = () => {
+  var notFan = db.prepare('SELECT name, id, brokenheartGiven FROM users WHERE brokenheartGiven > 0 ORDER BY brokenheartGiven DESC LIMIT 10').all();
+  if(notFan != -1) return notFan;
+}
+
+exports.goBest = (id) => {
+  var goBest = db.prepare('SELECT * FROM messages WHERE heart > 0 ORDER BY heart DESC LIMIT 10').all();
+  if(goBest != -1) return goBest;
+}
+
+exports.notBest = (id) => {
+  var notBest = db.prepare('SELECT * FROM messages WHERE brokenheart > 0 ORDER BY brokenheart DESC LIMIT 10').all();
+  if(notBest != -1) return notBest;
+}
+
+exports.goMment = (id) => {
+  var goMment = db.prepare('SELECT * FROM comments WHERE heart > 0 ORDER BY heart DESC LIMIT 10').all();
+  if(goMment != -1) return goMment;
+}
+
 
 /* Fonctions relativex aux dates */
 function todayDate() {

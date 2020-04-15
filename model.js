@@ -55,12 +55,11 @@ exports.new_message = (userId, message, category) => {
 exports.new_comment = (userId, messageId, comment) => {
   //car auto increment marche pas
   if (userId == -1 || messageId == -1) return;
-  var rowCount = db.prepare('SELECT COUNT(id) count FROM comments where messageId = ?').get(messageId);
+  var rowCount = db.prepare('SELECT COUNT(id) count FROM comments').get();
   var date = todayDate();
   var userName = getName(userId);
   var add = db.prepare('INSERT INTO comments (id, messageId, userName, userID, date, content, heart, brokenheart) VALUES(?, ?, ?, ?, ?, ?, ?, ?)').run(rowCount.count, messageId, userName, userId, date, comment, 0, 0);
   var userComments = db.prepare('SELECT commentCount from users where id = ?').get(userId);
-  console.log(userComments);
   userComments = userComments.commentCount;
   userComments++;
   db.prepare('UPDATE users SET commentCount = ? where id = ?').run(userComments, userId);
@@ -81,9 +80,23 @@ exports.getMessage = (id) => {
   if(message != -1) return message;
 }
 
+exports.deleteMessage = (id) => {
+  db.prepare('DELETE FROM messages WHERE id = ?').run(id);
+  db.prepare('DELETE FROM comments WHERE messageId = ?').run(id);
+}
+
 exports.getComments = (id) => {
   var comments = db.prepare('SELECT * FROM comments WHERE messageid = ? ORDER BY id DESC').all(id);
   if(comments != -1) return comments;
+}
+
+exports.getComment = (id) => {
+  var comment = db.prepare('SELECT * FROM comments WHERE id = ?').get(id);
+  if(comment != -1) return comment;
+}
+
+exports.deleteComment = (id) => {
+  db.prepare('DELETE FROM comments WHERE id = ?').run(id);
 }
 
 /* Fonctions relatives a l'accès de données des coeurs */
@@ -135,6 +148,13 @@ exports.goMment = (id) => {
   if(goMment != -1) return goMment;
 }
 
+/* Fonction pour la supression disponible si l'utilisateur est le bon ou a les droits */
+exports.addIsFromUser = (messages, id) => {
+  var usercategory = db.prepare('SELECT usercategory FROM users WHERE (id = ?)').get(id).userCategory;
+  try { messages.forEach((item) => (item.isFromUser = (id == item.userId || usercategory == 2))); }
+  catch(error) { messages.isFromUser = (id == messages.userId || usercategory == 2); }
+  return messages;
+}
 
 /* Fonctions relativex aux dates */
 function todayDate() {

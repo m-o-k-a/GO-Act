@@ -32,7 +32,7 @@
 </div>
 <br>
 <div class="jumbotron pt-4">
-    <h6 class="text-first">Go'Action! From {{messageData.userName}} | {{messageData.date}}</h6>
+    <h6 class="text-first"><a href="/delete/message/{{messageData.id}}" class="text-second text-hover-second">{{#messageData.isFromUser}}[X] {{/messageData.isFromUser}}</a>Go'Action! From {{messageData.userName}} | {{messageData.date}}</h6>
     <hr>
     <div class="card w-100 messages">
       <div class="card-body">
@@ -61,7 +61,7 @@
     <div class="w-100">
       {{#commentData}}
         <div class="card w-100 messages">
-            <div class="card-header text-third"><a href="/user/{{userId}}" class="text-third text-hover-third"><u>{{userName}}</u></a> | {{date}}</div>
+            <div class="card-header text-third"><a href="/delete/comment/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-third text-hover-third"><u>{{userName}}</u></a> | {{date}}</div>
               <div class="card-body">
                 <p class="card-text text-third">{{content}}</p><hr>
                 <p class="card-text text-third">💕{{heart}} 💔{{brokenheart}}</p>

@@ -32,13 +32,11 @@
 </div>
 <br>
 <div class="jumbotron pt-4">
-    <h6><a href="/user/{{id}}" class="text-first">Go'Actor {{viewUserName}}</a></h6>
+    <h6 class="text-first">Go'Actor <a href="/user/{{viewUserId}}" class="text-first text-hover-first">{{viewUserName}}</a></h6>
     <hr>
     <div class="card w-100 messages">
         <div class="card-body">
-            <a href="/user/{{id}}">
-                <p class="card-text text-second"><i>Messages : {{messageData.messageCount}}<br><br>Comments : {{messageData.commentCount}}<br><br>Hearts Received 💕: {{messageData.heartReceived}}</i></p>
-            </a>
+            <p class="card-text text-second"><i>Messages : {{messageData.messageCount}}<br><br>Comments : {{messageData.commentCount}}<br><br>Hearts Received 💕: {{messageData.heartReceived}}</i></p>
         </div>
     </div>
 </div>
@@ -49,7 +47,7 @@
     <div class="w-100">
         {{#messages}}
         <div class="card w-100 messages card-message">
-            <div class="card-header text-first"><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{viewUserName}}</u></a> | {{date}}</div>
+            <div class="card-header text-first"><a href="/delete/message/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{viewUserName}}</u></a> | {{date}}</div>
             <a href="/message/{{id}}"><div class="card-body">
                 <p class="card-text text-second">{{content}}</p><hr>
                 <p class="card-text text-third"><i>category: {{category}}</i> | 💕{{heart}} 💔{{brokenheart}}</p>

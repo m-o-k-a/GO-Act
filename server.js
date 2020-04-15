@@ -68,8 +68,8 @@ app.post('/sign-up', (req, res) => {
 /* dashboard */
 app.get('/dashboard', is_authenticated, (req, res) => {
   if(res.locals.authenticated) { 
-    var messagesList = model.getMessages();
     var user = model.fetchUserInformations(req.session.user);
+    var messagesList = model.addIsFromUser(model.getMessages(), req.session.user);
     res.render('dashboard', {id: req.session.user, messages: messagesList, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
   }
   else { res.redirect('/'); }
@@ -78,10 +78,11 @@ app.get('/dashboard', is_authenticated, (req, res) => {
 /* Page user */
 app.get('/user/:id', is_authenticated, (req, res) => {
   if(res.locals.authenticated && model.getMessage(req.params.id) != null) {
-    var viewUser = model.getUser(req.params.id);
+    var viewUser = model.getUser(req.params.id); 
+    if(viewUser == undefined) res.redirect('/');
     var user = model.fetchUserInformations(req.session.user);
-    var messagesList = model.getMessagesFrom(req.params.id);
-    res.render('user', {messageData: viewUser, userData: user, messages: messagesList, id: req.session.user, viewUserName: viewUser.name, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven});
+    var messagesList = model.addIsFromUser(model.getMessagesFrom(req.params.id), req.session.user);
+    res.render('user', {messageData: viewUser, userData: user, messages: messagesList, id: req.session.user, viewUserId: viewUser.id, viewUserName: viewUser.name, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven});
   }
   else { res.redirect('/'); }
 });
@@ -104,12 +105,51 @@ app.post('/send-comment/:id', (req, res) => {
 /* Page de message */
 app.get('/message/:id', is_authenticated, (req, res) => {
   if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) { 
-    var message = model.getMessage(req.params.id);
-    var comment = model.getComments(message.id);
+    var message = model.addIsFromUser(model.getMessage(req.params.id), req.session.user);
+    var comment = model.addIsFromUser(model.getComments(message.id), req.session.user);
     var user = model.fetchUserInformations(req.session.user);
     res.render('message', {messageData: message, commentData: comment, id: req.session.user, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
   }
   else { res.redirect('/'); }
+});
+
+/* Suppression de message */
+app.get('/delete/message/:id', is_authenticated, (req, res) => {
+  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) { 
+    var message = model.addIsFromUser(model.getMessage(req.params.id), req.session.user);
+    if (!message.isFromUser) res.redirect('/');
+    var user = model.fetchUserInformations(req.session.user);
+    res.render('deletemessage', {messageData: message, id: req.session.user, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
+  }
+  else { res.redirect('/'); }
+});
+app.post('/delete/message/:id', is_authenticated, (req, res) => {
+  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) { 
+    var message = model.addIsFromUser(model.getMessage(req.params.id), req.session.user);
+    if (!message.isFromUser) res.redirect('/');
+    model.deleteMessage(req.params.id);
+  }
+  res.redirect('/');
+});
+
+app.get('/delete/comment/:id', is_authenticated, (req, res) => {
+  if(res.locals.authenticated && model.getComment(req.params.id) != undefined) { 
+    var comment = model.addIsFromUser(model.getComment(req.params.id), req.session.user);
+    if (!comment.isFromUser) res.redirect('/');
+    var user = model.fetchUserInformations(req.session.user);
+    res.render('deletecomment', {commentData: comment, id: req.session.user, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
+  }
+  else { res.redirect('/'); }
+});
+app.post('/delete/comment/:id', is_authenticated, (req, res) => {
+  if(res.locals.authenticated && model.getComment(req.params.id) != undefined) { 
+    var message = model.addIsFromUser(model.getComment(req.params.id), req.session.user);
+    var messageId;
+    if (!message.isFromUser) res.redirect('/');
+    messageId = model.getComment(req.params.id).messageId;
+    model.deleteComment(req.params.id);
+  }
+  res.redirect('/message/'+messageId);
 });
 
 /* Gestion de coeurs */

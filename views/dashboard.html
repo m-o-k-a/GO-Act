@@ -57,7 +57,9 @@
 		<div class="w-100">
 			{{#messages}}
 				<div class="card w-100 messages card-message">
-  					<div class="card-header text-first"><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
+  					<div class="card-header text-first">
+  						<a href="/delete/message/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}
+  					</div>
   						<a href="/message/{{id}}"><div class="card-body">
     						<p class="card-text text-second">{{content}}</p><hr>
     						<p class="card-text text-third"><i>category: {{category}}</i> | 💕{{heart}} 💔{{brokenheart}}</p>

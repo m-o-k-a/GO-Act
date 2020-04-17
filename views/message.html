@@ -32,12 +32,14 @@
 </div>
 <br>
 <div class="jumbotron pt-4">
-    <h6 class="text-first"><a href="/delete/message/{{messageData.id}}" class="text-second text-hover-second">{{#messageData.isFromUser}}[X] {{/messageData.isFromUser}}</a>Go'Action! From {{messageData.userName}} | {{messageData.date}}</h6>
+    <h6 class="text-first"><a href="/delete/message/{{messageData.id}}" class="text-second text-hover-second">{{#messageData.isFromUser}}[X] {{/messageData.isFromUser}}</a>Go'Action! From <a href="/user/{{messageData.userId}}" class="text-third text-hover-third">{{messageData.userName}}</a> | {{messageData.date}}</h6>
     <hr>
     <div class="card w-100 messages">
       <div class="card-body">
         <p class="card-text text-second">{{messageData.content}}</p><hr>
-        <p class="card-text text-third"><i>category: {{messageData.category}}</i> | 💕{{messageData.heart}} 💔{{messageData.brokenheart}}</p>
+        <p class="card-text text-third"><a class="text-third text-hover-third"><i>category: {{messageData.category}}</i></a><a href="/addHeart/message/{{messageData.id}}" class="text-third text-hover-third">💕{{messageData.heart}}</a> <a href="/addBrokenHeart/message/{{messageData.id}}" class="text-third text-hover-third">💔{{messageData.brokenheart}}</a></p>
+
+
       </div>
     </div>
   <div class="messagesBox-send">
@@ -64,7 +66,7 @@
             <div class="card-header text-third"><a href="/delete/comment/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-third text-hover-third"><u>{{userName}}</u></a> | {{date}}</div>
               <div class="card-body">
                 <p class="card-text text-third">{{content}}</p><hr>
-                <p class="card-text text-third">💕{{heart}} 💔{{brokenheart}}</p>
+                <a href="/addHeart/comment/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/comment/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a>
               </div>
           </div>
           <br>

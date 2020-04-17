@@ -50,7 +50,7 @@
             <div class="card-header text-first"><a href="/delete/message/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{viewUserName}}</u></a> | {{date}}</div>
             <a href="/message/{{id}}"><div class="card-body">
                 <p class="card-text text-second">{{content}}</p><hr>
-                <p class="card-text text-third"><i>category: {{category}}</i> | 💕{{heart}} 💔{{brokenheart}}</p>
+                <p class="card-text text-third"><a class="text-third text-hover-third"><i>category: {{category}}</i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
             </div></a>
         </div>
         <br>

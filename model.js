@@ -41,11 +41,11 @@ exports.getUser = (id) => {
 /* Fonctions relatives a l'accès de données messages */
 exports.new_message = (userId, message, category) => {
   //car auto increment marche pas
-  var rowCount = db.prepare('SELECT COUNT(id) count FROM messages');
+  var rowCount = db.prepare('SELECT MAX(id) count FROM messages');
   var date = todayDate();
   var userName = getName(userId);
   if (userName == -1) return;
-  var add = db.prepare('INSERT INTO messages (id, userName, userID, date, content, category, heart, brokenheart) VALUES(?, ?, ?, ?, ?, ?, ?, ?)').run(rowCount.get().count, userName, userId, date, message, category, 0, 0);
+  var add = db.prepare('INSERT INTO messages (id, userName, userID, date, content, category, heart, brokenheart) VALUES(?, ?, ?, ?, ?, ?, ?, ?)').run(rowCount.get().count+1, userName, userId, date, message, category, 0, 0);
   var userMessages = db.prepare('SELECT messageCount from users where id = ?').get(userId);
   userMessages = userMessages.messageCount;
   userMessages++;
@@ -55,10 +55,10 @@ exports.new_message = (userId, message, category) => {
 exports.new_comment = (userId, messageId, comment) => {
   //car auto increment marche pas
   if (userId == -1 || messageId == -1) return;
-  var rowCount = db.prepare('SELECT COUNT(id) count FROM comments').get();
+  var rowCount = db.prepare('SELECT MAX(id) count FROM comments').get();
   var date = todayDate();
   var userName = getName(userId);
-  var add = db.prepare('INSERT INTO comments (id, messageId, userName, userID, date, content, heart, brokenheart) VALUES(?, ?, ?, ?, ?, ?, ?, ?)').run(rowCount.count, messageId, userName, userId, date, comment, 0, 0);
+  var add = db.prepare('INSERT INTO comments (id, messageId, userName, userID, date, content, heart, brokenheart) VALUES(?, ?, ?, ?, ?, ?, ?, ?)').run(rowCount.count+1, messageId, userName, userId, date, comment, 0, 0);
   var userComments = db.prepare('SELECT commentCount from users where id = ?').get(userId);
   userComments = userComments.commentCount;
   userComments++;
@@ -82,6 +82,7 @@ exports.getMessage = (id) => {
 
 exports.deleteMessage = (id) => {
   db.prepare('DELETE FROM messages WHERE id = ?').run(id);
+  db.prepare('DELETE FROM heartrelMsg WHERE messageId = ?').run(id);
   db.prepare('DELETE FROM comments WHERE messageId = ?').run(id);
 }
 
@@ -97,13 +98,45 @@ exports.getComment = (id) => {
 
 exports.deleteComment = (id) => {
   db.prepare('DELETE FROM comments WHERE id = ?').run(id);
+  db.prepare('DELETE FROM heartrelCom WHERE commentId = ?').run(id);
 }
 
 /* Fonctions relatives a l'accès de données des coeurs */
-exports.heart = (userId, messageId) => {
-  var messageAdd = db.prepare('INSERT INTO heartref (userId, messageId) VALUES(?, ?)').run(userId, messageId);
-  var messageHeart = db.prepare('SELECT heart FROM messages WHERE id = ?').get(Id);
-  messageHeart = messageHeart.heart++;
+exports.getHeart = (messageId, isBroken, isComment) => {
+  if(isComment) { var count = db.prepare('SELECT count(userId) count FROM heartrelCom WHERE commentId = ? AND isBroken = ?').get(messageId, isBroken); }
+  else { var count = db.prepare('SELECT count(userId) count FROM heartrelMsg WHERE messageId = ? AND isBroken = ?').get(messageId, isBroken); }
+  return count.count;
+}
+function getHeart(messageId, isBroken, isComment) {
+  if(isComment) { var count = db.prepare('SELECT count(userId) count FROM heartrelCom WHERE commentId = ? AND isBroken = ?').get(messageId, isBroken); }
+  else { var count = db.prepare('SELECT count(userId) count FROM heartrelMsg WHERE messageId = ? AND isBroken = ?').get(messageId, isBroken); }
+  return count.count;
+}
+
+exports.addHeart = (userId, messageId, isBroken, isComment) => {
+  if(isComment) {
+    var data = db.prepare('SELECT * FROM heartrelCom WHERE commentId = ? AND userid = ?').get(messageId, userId);
+    if (data == undefined) { var add = db.prepare('INSERT INTO heartrelCom (commentId, userId, isBroken) VALUES(?, ?, ?)').run(messageId, userId, isBroken); }
+    else {
+      db.prepare('DELETE FROM heartrelCom WHERE commentId = ? AND userId = ?').run(messageId, userId);
+      if((data.isBroken == 0 && isBroken == 1) || (data.isBroken == 1 && isBroken == 0)) { db.prepare('INSERT INTO heartrelCom (commentId, userid, isBroken) VALUES(?, ?, ?)').run(messageId, userId, isBroken); }
+    }
+
+  }
+  else {
+    var data = db.prepare('SELECT * FROM heartrelMsg WHERE messageId = ? AND userid = ?').get(messageId, userId);
+    if (data == undefined) { var add = db.prepare('INSERT INTO heartrelmsg (messageId, userId, isBroken) VALUES(?, ?, ?)').run(messageId, userId, isBroken); }
+    else {
+      db.prepare('DELETE FROM heartrelMsg WHERE messageId = ? AND userId = ?').run(messageId, userId);
+      if((data.isBroken == 0 && isBroken == 1) || (data.isBroken == 1 && isBroken == 0)) { db.prepare('INSERT INTO heartrelMsg (messageId, userid, isBroken) VALUES(?, ?, ?)').run(messageId, userId, isBroken); }
+    }
+  }
+}
+
+exports.getHearts = (messages, isComment) => {
+  try { messages.forEach((item) => (item.heart = getHeart(item.id, 0, isComment))); messages.forEach((item) => (item.brokenheart = getHeart(item.id, 1, isComment))); }
+  catch(error) { messages.heart = getHeart(messages.id, 0, isComment); messages.brokenheart = getHeart(messages.id, 1, isComment); }
+  return messages;
 }
 
 /* Fonctions leaderboards */
@@ -166,19 +199,16 @@ function todayDate() {
   return today;
 } 
 
-/*	MEMO	*/
+/*  MEMO  */
 /*
-  if(messageAdd != -1) {
-    db.prepare('UPDATE messages SET heart=? WHERE id = ?').get(messageHeart, Id);
-  }
-CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT PRIMARY KEY, name TEXT, password TEXT, lvl INTEGER, fanlvl INTEGER, heartReceived INTEGER, 
-brokenHeartReceived INTEGER, heartGiven INTEGER, brokenheartGiven INTEGER, userCategory INTEGER, messageCount INTEGER, commentCount INTEGER)
+CREATE TABLE users (id INTEGER NOT NULL, email TEXT, name TEXT, password TEXT, lvl INTEGER, fanlvl INTEGER, heartReceived INTEGER, brokenHeartReceived INTEGER, heartGiven INTEGER, brokenHeartGiven INTEGER, messageCount INTEGER, commentCount INTEGER, userCategory INTEGER,
+PRIMARY KEY (id, email));
 
-CREATE TABLE messages (id INTEGER PRIMARY KEY AUTOINCREMENT, userId INTEGER, date DATE, content TEXT, category TEXT, heart INTEGER, brokenheart INTEGER)
-CREATE TABLE comments (id INTEGER PRIMARY KEY AUTOINCREMENT, messageId INTEGER, userId INTEGER, date DATE, content TEXT, heart INTEGER, brokenheart INTEGER);
+CREATE TABLE messages (id INTEGER PRIMARY KEY, userName TEXT, userId INTEGER, date TEXT, content TEXT, category TEXT, heart INTEGER, brokenheart INTEGER);
 
-HEARTREF(messageid INTEGER, userid INTEGER) both primary key
-BROKENHEARTREF(messageid INTEGER, userid INTEGER) both primary key
+CREATE TABLE comments (id INTEGER NOT NULL, messageId INTEGER NOT NULL, userName TEXT, userId INTEGER, date TEXT, content TEXT, heart INTEGER, brokenheart INTEGER, PRIMARY KEY(id, messageId));
 
-usercategory: 0 = user; 1 = moderator; 2 = admin;
+CREATE TABLE heartRelMsg (messageid INTEGER, userid INTEGER, isBroken INTEGER, PRIMARY KEY(messageid, userid));
+
+CREATE TABLE heartRelCom (commentid INTEGER, userid INTEGER, isBroken INTEGER, PRIMARY KEY(commentid, userid));
 */

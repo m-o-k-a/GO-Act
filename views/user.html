@@ -1,48 +1,21 @@
 {{> header}}
 
-<div class="jumbotron mx-auto m-0 p-0">
-    <div class="d-sm-flex justify-content-start align-items-center user-info m-0 p-0">
-        <div class="p-2">
-            <img class="mb-3" src="/lvl/lvl0.png" alt="" width="100" height="100">
-        </div>
-        <div class="p-2 text-left">
-            <h4><a href="/user/{{id}}" class="text-center text-first text-hover-first">{{name}}</a></h4>
-            <p class="f-vsm text-third">
-                level: {{lvl}}
-                <br>
-                <i>fan level: {{fanlvl}}</i>
-                <br>
-                💕 {{hg}}/{{hr}}
-                💔 {{bhg}}/{{bhr}}
-            </p>
-        </div>
-        <div class="ml-auto p-2 d-sm-flex justify-content-start align-items-center user-info m-0 p-0">
-            <div class="p-2">
-                <a href="/dashboard" class="btn btn-primary btn-lg bkg-second bkg-hover-second">Home</a>
-            </div>
-            <div class="ml-auto p-2">
-                <a href="/logout" class="btn btn-primary btn-lg bkg-second bkg-hover-second">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
-<br>
 <div class="jumbotron mx-auto m-0 p-0 text-center">
     <b><a href="/leaderboards" class="text-second text-hover-second">Access the Leaderboards and see the best Go'Actors!</a></b>
 </div>
 <br>
 <div class="jumbotron pt-4">
-    <h6 class="text-first">Go'Actor <a href="/user/{{viewUserId}}" class="text-first text-hover-first">{{viewUserName}}</a></h6>
+    <h6 class="text-first">Go'Actor <a href="/user/{{viewUserId}}" class="text-first text-hover-first">{{viewUser.name}}</a></h6>
     <hr>
     <div class="card w-100 messages">
         <div class="card-body">
-            <p class="card-text text-second"><i>Messages : {{messageData.messageCount}}<br><br>Comments : {{messageData.commentCount}}<br><br>Hearts Received 💕: {{messageData.heartReceived}}</i></p>
+            <p class="card-text text-second"><i>Messages : {{viewUser.messageCount}}<br><br>Comments : {{viewUser.commentCount}}<br><br>Hearts Received 💕: {{viewUser.heartReceived}}</i></p>
         </div>
     </div>
 </div>
 <br>
 <div class="jumbotron pt-4">
-    <h6 class="text-first"> {{viewUserName}} Messages:</h6>
+    <h6 class="text-first"> {{viewUser.name}} Messages:</h6>
     <hr>
     <div class="w-100">
         {{#messages}}

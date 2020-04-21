@@ -1,32 +1,5 @@
 {{> header}}
 
-<div class="jumbotron mx-auto m-0 p-0">
-  <div class="d-sm-flex justify-content-start align-items-center user-info m-0 p-0">
-    <div class="p-2">
-      <img class="mb-3" src="/lvl/lvl0.png" alt="" width="100" height="100">
-    </div>
-    <div class="p-2 text-left">
-      <h4><a href="/user/{{id}}" class="text-center text-first text-hover-first">{{name}}</a></h4>
-          <p class="f-vsm text-third">
-            level: {{lvl}}
-            <br>
-            <i>fan level: {{fanlvl}}</i>
-            <br>
-            💕 {{hg}}/{{hr}} 
-            💔 {{bhg}}/{{bhr}}
-          </p>
-    </div>
-    <div class="ml-auto p-2 d-sm-flex justify-content-start align-items-center user-info m-0 p-0">
-      <div class="p-2">
-        <a href="/dashboard" class="btn btn-primary btn-lg bkg-second bkg-hover-second">Home</a>
-      </div>
-      <div class="ml-auto p-2">
-        <a href="/logout" class="btn btn-primary btn-lg bkg-second bkg-hover-second">Logout</a>
-      </div>
-    </div>
-  </div>
-</div>
-<br>
 <div class="jumbotron mx-auto m-0 p-0 text-center">
   <b><a href="/leaderboards" class="text-second text-hover-second">Access the Leaderboards and see the best Go'Actors!</a></b>
 </div>
@@ -37,7 +10,7 @@
     <div>
       <ol>
         {{#goCount}}
-          <li><a href="/user/{{id}}" class="text-first text-hover-first">{{name}}</a> ({{messageCount}})</li>
+          <li><a href="/user/{{userId}}" class="text-first text-hover-first">{{userName}}</a> ({{messageCount}})</li>
         {{/goCount}}
     </ol>
     </div>
@@ -46,7 +19,7 @@
     <div>
       <ol>
         {{#goLike}}
-          <li><a href="/user/{{id}}" class="text-first text-hover-first">{{name}}</a> ({{heartReceived}})</li>
+          <li><a href="/user/{{userId}}" class="text-first text-hover-first">{{name}}</a> ({{heartReceived}})</li>
         {{/goLike}}
       </ol>
     </div>
@@ -68,7 +41,7 @@
       {{#goBest}}
         <div class="card w-75 messages card-message">
           <div class="card-header text-first"><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
-            <a href="/message/{{id}}"><div class="card-body">
+            <a href="/message/{{userId}}"><div class="card-body">
               <p class="card-text text-second">{{content}}</p><hr>
               <p class="card-text text-third"><i>category: {{category}}</i> | 💕{{heart}} 💔{{brokenheart}}</p>
             </div></a>
@@ -80,12 +53,12 @@
     <hr>
     <div>
       {{#goMment}}
-        <div class="card w-75 messages">
-          <div class="card-header text-third"><a href="/user/{{userId}}" class="text-third text-hover-third"><u>{{userName}}</u></a> | {{date}}</div>
-            <div class="card-body">
-              <p class="card-text text-third">{{content}}</p><hr>
-              <p class="card-text text-third">💕{{heart}} 💔{{brokenheart}}</p>
-            </div>
+        <div class="card w-75 messages card-message">
+          <div class="card-header text-first"><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
+            <a href="/message/{{userId}}"><div class="card-body">
+              <p class="card-text text-second">{{content}}</p><hr>
+              <p class="card-text text-third"><i>category: {{category}}</i> | 💕{{heart}} 💔{{brokenheart}}</p>
+            </div></a>
         </div>
         <br>
       {{/goMment}}
@@ -120,7 +93,7 @@
       {{#notBest}}
         <div class="card w-75 messages card-message">
           <div class="card-header text-first"><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
-            <a href="/message/{{id}}"><div class="card-body">
+            <a href="/message/{{userId}}"><div class="card-body">
               <p class="card-text text-second">{{content}}</p><hr>
               <p class="card-text text-third"><i>category: {{category}}</i> | 💕{{heart}} 💔{{brokenheart}}</p>
             </div></a>

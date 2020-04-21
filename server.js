@@ -71,20 +71,20 @@ app.get('/dashboard', is_authenticated, (req, res) => {
     var user = model.fetchUserInformations(req.session.user);
     var messagesList = model.addIsFromUser(model.getMessages(), req.session.user);
     messagesList = model.getHearts(messagesList, 0);
-    res.render('dashboard', {id: req.session.user, messages: messagesList, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
+    res.render('dashboard', {id: req.session.user, messages: messagesList, userData: user}); 
   }
   else { res.redirect('/'); }
 });
 
 /* Page user */
 app.get('/user/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.getUser(req.params.id) != null) {
-    var viewUser = model.getUser(req.params.id); 
+  if(res.locals.authenticated && model.fetchUserInformations(req.params.id) != null) {
+    var viewUser = model.fetchUserInformations(req.params.id); 
     if(viewUser == undefined) res.redirect('/');
     var user = model.fetchUserInformations(req.session.user);
     var messagesList = model.addIsFromUser(model.getMessagesFrom(req.params.id), req.session.user);
     messagesList = model.getHearts(messagesList, 0);
-    res.render('user', {messageData: viewUser, userData: user, messages: messagesList, id: req.session.user, viewUserId: viewUser.id, viewUserName: viewUser.name, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven});
+    res.render('user', {viewUser: viewUser, userData: user, messages: messagesList, id: req.session.user});
   }
   else { res.redirect('/'); }
 });
@@ -112,7 +112,7 @@ app.get('/message/:id', is_authenticated, (req, res) => {
     var comment = model.addIsFromUser(model.getComments(message.id), req.session.user);
     comment = model.getHearts(comment, 1);
     var user = model.fetchUserInformations(req.session.user);
-    res.render('message', {messageData: message, commentData: comment, id: req.session.user, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
+    res.render('message', {messageData: message, commentData: comment, id: req.session.user, userData: user}); 
   }
   else { res.redirect('/'); }
 });
@@ -124,7 +124,7 @@ app.get('/delete/message/:id', is_authenticated, (req, res) => {
     message = model.getHearts(message, 0);
     if (!message.isFromUser) res.redirect('/');
     var user = model.fetchUserInformations(req.session.user);
-    res.render('deletemessage', {messageData: message, id: req.session.user, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
+    res.render('deletemessage', {messageData: message, id: req.session.user, userData: user}); 
   }
   else { res.redirect('/'); }
 });
@@ -143,7 +143,7 @@ app.get('/delete/comment/:id', is_authenticated, (req, res) => {
     comment = model.getHearts(comment, 1);
     if (!comment.isFromUser) res.redirect('/');
     var user = model.fetchUserInformations(req.session.user);
-    res.render('deletecomment', {commentData: comment, id: req.session.user, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
+    res.render('deletecomment', {commentData: comment, id: req.session.user, userData: user}); 
   }
   else { res.redirect('/'); }
 });
@@ -201,7 +201,7 @@ app.get('/leaderboards', (req, res) => {
   var bheartR = model.notLike();
   var bheartG = model.notFan();
   var badmessages = model.notBest();
-  res.render('leaderboards', {id: req.session.user, goCount: count, goLike: heartR, goFan: heartG, goBest: messages, goMment: comments, notLike: bheartR, notFan: bheartG, notBest: badmessages, name: user.name, lvl: user.lvl, fanlvl: user.lvl, hr: user.heartReceived, bhr: user.brokenHeartReceived, hg: user.heartGiven, bhg: user.brokenHeartGiven}); 
+  res.render('leaderboards', {id: req.session.user, goCount: count, goLike: heartR, goFan: heartG, goBest: messages, goMment: comments, notLike: bheartR, notFan: bheartG, notBest: badmessages, userData: user}); 
 });
 
 /* déconnexion */

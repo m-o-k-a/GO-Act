@@ -47,6 +47,10 @@ exports.fetchUserCategory = (id) => {
   var category = db.prepare('SELECT userCategory FROM users WHERE (id = ?)').get(id);
     return category;
 }
+function fetchUserCategory(id) {
+  var category = db.prepare('SELECT userCategory FROM users WHERE (id = ?)').get(id);
+    return category;
+}
 
 function getName(id) {
     var user = db.prepare('SELECT name FROM users WHERE (id = ?)').get(id);
@@ -207,8 +211,8 @@ exports.goMment = (id) => {
 /* Fonction pour la supression disponible si l'utilisateur est le bon ou a les droits */
 exports.addIsFromUser = (messages, id) => {
   var usercategory = db.prepare('SELECT usercategory FROM users WHERE (id = ?)').get(id).userCategory;
-  try { messages.forEach((item) => (item.isFromUser = (id == item.userId || usercategory == 2))); }
-  catch(error) { messages.isFromUser = (id == messages.userId || usercategory == 2); }
+  try { messages.forEach((item) => (item.isFromUser = (id == item.userId || usercategory == 2 || (usercategory == 1 && fetchUserCategory(item.userId).userCategory == 0)))); }
+  catch(error) { messages.isFromUser = (id == messages.userId || usercategory == 2 || (usercategory == 1 && fetchUserCategory(messages.userId).userCategory == 0)); }
   return messages;
 }
 

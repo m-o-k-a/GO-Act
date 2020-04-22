@@ -19,7 +19,7 @@ exports.new_user = (name, email, password) => {
 
 /* Fonctions relatives a l'accès de données utilisateur */
 exports.fetchUserInformations = (id) => {
-	var user = db.prepare('SELECT name, email FROM users WHERE (id = ?)').get(id);
+	var user = db.prepare('SELECT name, email, userCategory FROM users WHERE (id = ?)').get(id);
   //add from external table
   user.heartGiven = db.prepare('SELECT count(isBroken) count FROM heartrelmsg WHERE userId = ? AND isBroken = 0').get(id).count + db.prepare('SELECT count(isBroken) count FROM heartrelcom WHERE userId = ? AND isBroken = 0').get(id).count;
   user.brokenHeartGiven = db.prepare('SELECT count(isBroken) count FROM heartrelmsg WHERE userId = ? AND isBroken = 1').get(id).count + db.prepare('SELECT count(isBroken) count FROM heartrelcom WHERE userId = ? AND isBroken = 1').get(id).count;
@@ -27,7 +27,20 @@ exports.fetchUserInformations = (id) => {
   user.brokenHeartReceived = db.prepare('SELECT count(isBroken) count FROM (heartrelmsg JOIN messages ON heartrelmsg.messageId = messages.id) WHERE messages.userId = ? AND isBroken = 1').get(id).count + db.prepare('SELECT count(isBroken) count FROM (heartrelcom JOIN comments ON heartrelCom.commentId = comments.Id) JOIN messages ON comments.messageid = messages.id WHERE messages.userId = ? AND isBroken = 1').get(id).count;
   user.messageCount = db.prepare('SELECT Count(userId) count FROM messages WHERE userId = ?').get(id).count;
   user.commentCount = db.prepare('SELECT Count(userId) count FROM comments WHERE userId = ?').get(id).count;
+  user.profilePic = getProfilePic(user.messageCount, user.userCategory);
   return user;
+}
+
+function getProfilePic(messageCount, userCategory) {
+  if(userCategory == 2) return "/lvl/lvlADMIN.png";
+  else if(userCategory == 1) return "/lvl/lvlMODERATION.png";
+  else if(messageCount >= 320 ) return "/lvl/lvlMAX.png";
+  else if(messageCount >= 160 ) return "/lvl/lvl5.png";
+  else if(messageCount >= 80 ) return "/lvl/lvl4.png";
+  else if(messageCount >= 40 ) return "/lvl/lvl3.png";
+  else if(messageCount >= 20 ) return "/lvl/lvl2.png";
+  else if(messageCount >= 10 ) return "/lvl/lvl1.png";
+  else return "/lvl/lvl0.png";
 }
 
 exports.fetchUserCategory = (id) => {

@@ -22,10 +22,10 @@
             </p>
         </div>
     </div>
+    {{#viewUser.canDelete}}
+        <a href="/delete/user/{{viewUser.id}}" class="text-third text-hover-third" ><i>Do you want to delete Account..?</i></a>
+    {{/viewUser.canDelete}}
     <hr>
-    {{#usercanDelete}}
-    <a href="/delete/user/{{id}}" class="text-third text-hover-third" ><i>Do you want to delete Account..?</i></a>
-    {{/usercanDelete}}
 </div>
 
 <br>

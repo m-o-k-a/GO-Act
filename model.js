@@ -19,7 +19,7 @@ exports.new_user = (name, email, password) => {
 
 /* Fonctions relatives a l'accès de données utilisateur */
 exports.fetchUserInformations = (id) => {
-	var user = db.prepare('SELECT name, email, userCategory FROM users WHERE (id = ?)').get(id);
+	var user = db.prepare('SELECT id, name, email, userCategory FROM users WHERE (id = ?)').get(id);
   //add from external table
   user.heartGiven = db.prepare('SELECT count(isBroken) count FROM heartrelmsg WHERE userId = ? AND isBroken = 0').get(id).count + db.prepare('SELECT count(isBroken) count FROM heartrelcom WHERE userId = ? AND isBroken = 0').get(id).count;
   user.brokenHeartGiven = db.prepare('SELECT count(isBroken) count FROM heartrelmsg WHERE userId = ? AND isBroken = 1').get(id).count + db.prepare('SELECT count(isBroken) count FROM heartrelcom WHERE userId = ? AND isBroken = 1').get(id).count;
@@ -222,19 +222,18 @@ exports.addIsFromUser = (messages, id) => {
   return messages;
 }
 
-exports.canDelete = (users, id) => {
+exports.canDelete = (viewUser, id) => {
  var usercategory = db.prepare('SELECT usercategory FROM users WHERE (id = ?)').get(id).userCategory;
-  try { users.forEach((item) => (item.isFromUser = (id == item.id || usercategory == 2 || (usercategory == 1 && fetchUserCategory(item.id).userCategory == 0)))); }
-  catch(error) { users = (id == users.id || usercategory == 2 || (usercategory == 1 && fetchUserCategory(users.id).userCategory == 0)); }
-  return users;
+ viewUser.canDelete = (id == viewUser.id || usercategory == 2 || (usercategory == 1 && fetchUserCategory(viewUser.id).userCategory == 0));
+  return viewUser;
 }
 
 exports.deleteUser = (id) =>{
    db.prepare('DELETE FROM users WHERE id = ?').run(id);
-   db.prepare('DELETE FROM messages WHERE id = ?').run(id);
-   db.prepare('DELETE FROM heartrelMsg WHERE messageId = ?').run(id);
-   db.prepare('DELETE FROM comments WHERE messageId = ?').run(id);
-   db.prepare('DELETE FROM heartrelCom WHERE commentId = ?').run(id);
+   db.prepare('DELETE FROM messages WHERE userId = ?').run(id);
+   db.prepare('DELETE FROM comments WHERE userId = ?').run(id);
+   db.prepare('DELETE FROM heartrelMsg WHERE userId = ?').run(id);
+   db.prepare('DELETE FROM heartrelCom WHERE userId = ?').run(id);
 }
 
 

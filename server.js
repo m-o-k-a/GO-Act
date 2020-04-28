@@ -78,35 +78,33 @@ app.get('/dashboard', is_authenticated, (req, res) => {
 
 /* Page user */
 app.get('/user/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.fetchUserInformations(req.params.id) != null) {
-    var viewUser = model.fetchUserInformations(req.params.id);
+  if(res.locals.authenticated && model.fetchUserInformations(req.params.id) != undefined) {
+    var viewUser = model.canDelete(model.fetchUserInformations(req.params.id), req.session.user);
     if(viewUser == undefined) res.redirect('/');
     var user = model.fetchUserInformations(req.session.user);
-    var usercanDelete = model.canDelete(model.getUserFrom(req.params.id), req.session.user);
     var messagesList = model.addIsFromUser(model.getMessagesFrom(req.params.id), req.session.user);
     messagesList = model.getHearts(messagesList, 0);
-    res.render('user', {usercanDelete: usercanDelete, viewUser: viewUser, userData: user, messages: messagesList, id: req.session.user});
+    res.render('user', {viewUser: viewUser, userData: user, messages: messagesList});
   }
   else { res.redirect('/'); }
 });
 
-/* Suppression de user*/
+/* Suppression de l'utilisateur*/
 
 app.get('/delete/user/:id', is_authenticated, (req, res) => {
     if(res.locals.authenticated && model.getUser(req.params.id) != undefined) {
-        var user = model.canDelete(model.getUser(req.params.id), req.session.user);
+        var user = model.fetchUserInformations(req.session.user);
         var viewUser = model.fetchUserInformations(req.params.id);
-        res.render('deleteuser', {viewUser: viewUser, userData: user, id: req.session.user});
+        res.render('deleteuser', {viewUser: viewUser, userData: user});
     }
      else { res.redirect('/'); }
 });
 
 app.post('/delete/user/:id', is_authenticated, (req, res) => {
-    console.log(req.params.id);
-    /*if(res.locals.authenticated && model.getUser(req.params.id) != undefined) {
-        var user = model.canDelete(model.getUser(req.params.id), req.session.user);
+    if(res.locals.authenticated && model.getUser(req.params.id) != undefined && model.canDelete(model.fetchUserInformations(req.params.id), req.session.user).canDelete) {
         model.deleteUser(req.params.id);
-    }*/
+        if(req.params.id == req.session.user) { req.session.user = null; }
+    }
     res.redirect('/');
 });
 

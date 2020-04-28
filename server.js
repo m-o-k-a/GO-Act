@@ -47,9 +47,11 @@ app.get('/sign-in', is_authenticated, (req, res) => {
 
 app.post('/sign-in', (req, res) => {
   var id = model.login(req.body.email, req.body.password);
-  if (id == -1) { res.redirect('/sign-in'); }
-  req.session.user = id;
-  res.redirect('/dashboard');
+  if(id == undefined) { res.render('sign-in', {error : 'user does not exist or password is incorrect'}); }
+  else {
+    req.session.user = id;
+    res.redirect('/dashboard');
+  }
 });
 
 /* page d'inscription */
@@ -59,10 +61,13 @@ app.get('/sign-up', is_authenticated, (req, res) => {
 });
 
 app.post('/sign-up', (req, res) => {
-  var id = model.new_user(req.body.name, req.body.email, req.body.password);
-  if (id == -1) { res.redirect('/sign-up'); }
-  req.session.user = id;
-  res.redirect('/dashboard');
+  if(req.body.password != req.body.passwordConfirm) { res.render('sign-up', {error : 'passwords does not match', name : req.body.name, email : req.body.email}); }
+  else if (model.emailExist(req.body.email)) { res.render('sign-up', {error : 'email is already used', name : req.body.name, email : req.body.email}); }
+  else {
+    var id = model.new_user(req.body.name, req.body.email, req.body.password);
+    req.session.user = id;
+    res.redirect('/dashboard');
+  }
 });
 
 /* dashboard */
@@ -78,26 +83,44 @@ app.get('/dashboard', is_authenticated, (req, res) => {
 
 /* Page user */
 app.get('/user/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.fetchUserInformations(req.params.id) != null) {
-    var viewUser = model.fetchUserInformations(req.params.id); 
+  if(res.locals.authenticated && model.fetchUserInformations(req.params.id) != undefined) {
+    var viewUser = model.canDelete(model.fetchUserInformations(req.params.id), req.session.user);
     if(viewUser == undefined) res.redirect('/');
     var user = model.fetchUserInformations(req.session.user);
     var messagesList = model.addIsFromUser(model.getMessagesFrom(req.params.id), req.session.user);
     messagesList = model.getHearts(messagesList, 0);
-    res.render('user', {viewUser: viewUser, userData: user, messages: messagesList, id: req.session.user});
+    res.render('user', {viewUser: viewUser, userData: user, messages: messagesList});
   }
   else { res.redirect('/'); }
 });
 
+/* Supression de l'utilisateur */
+app.get('/delete/user/:id', is_authenticated, (req, res) => {
+    if(res.locals.authenticated && model.getUser(req.params.id) != undefined) {
+        var user = model.fetchUserInformations(req.session.user);
+        var viewUser = model.fetchUserInformations(req.params.id);
+        res.render('deleteuser', {viewUser: viewUser, userData: user});
+    }
+     else { res.redirect('/'); }
+});
+
+app.post('/delete/user/:id', is_authenticated, (req, res) => {
+    if(res.locals.authenticated && model.getUser(req.params.id) != undefined && model.canDelete(model.fetchUserInformations(req.params.id), req.session.user).canDelete) {
+        model.deleteUser(req.params.id);
+        if(req.params.id == req.session.user) { req.session.user = null; }
+    }
+    res.redirect('/');
+});
+
 /* Envoi de message */
 app.post('/send-message', (req, res) => {
-  if (req.session.user == -1) { res.redirect('/'); }
+  if (req.session.user == undefined) { res.redirect('/'); }
   var messageId = model.new_message(req.session.user, req.body.message_content, req.body.message_category.toLowerCase());
   res.redirect('/dashboard');
 });
 
 app.post('/send-comment/:id', (req, res) => {
-  if (req.session.user == -1) { res.redirect('/'); }
+  if (req.session.user == undefined) { res.redirect('/'); }
   var user = model.getUser(req.session.user);
   var comment = model.new_comment(req.session.user, req.params.id, req.body.comment_content);
   var message = model.getMessage(req.params.id);
@@ -191,7 +214,7 @@ app.get('/addBrokenHeart/comment/:id', is_authenticated, (req, res) => {
 
 /* Leaderboards */
 app.get('/leaderboards', (req, res) => {
-  if (req.session.user == -1) { res.redirect('/'); }
+  if (req.session.user == undefined) { res.redirect('/'); }
   var user = model.fetchUserInformations(req.session.user);
   var count = model.goCount();
   var heartR = model.goLike();
@@ -202,6 +225,24 @@ app.get('/leaderboards', (req, res) => {
   var bheartG = model.notFan();
   var badmessages = model.notBest();
   res.render('leaderboards', {id: req.session.user, goCount: count, goLike: heartR, goFan: heartG, goBest: messages, goMment: comments, notLike: bheartR, notFan: bheartG, notBest: badmessages, userData: user}); 
+});
+
+/* Categorie */
+app.get('/category/:cat', is_authenticated, (req, res) => {
+  if(!res.locals.authenticated) { res.redirect('/'); }
+  var user = model.fetchUserInformations(req.session.user);
+  var messagesList = model.addIsFromUser(model.getMessagesCategory(req.params.cat), req.session.user);
+  messagesList = model.getHearts(messagesList, 0);
+  res.render('category', {id: req.session.user, messages: messagesList, userData: user, category: req.params.cat}); 
+});
+
+/* Recherche */
+app.get('/search', is_authenticated, (req, res) => {
+  if(!res.locals.authenticated) { res.redirect('/'); }
+  var user = model.fetchUserInformations(req.session.user);
+  var messagesCategory = model.getHearts(model.addIsFromUser(model.getMessagesCategory(req.query["q"]), req.session.user), 0);
+  var messagesContains = model.getHearts(model.addIsFromUser(model.getMessagesContains(req.query["q"]), req.session.user), 0);
+  res.render('search', {id: req.session.user, messagesCategory: messagesCategory, messagescontains: messagesContains, userData: user, query: req.query["q"]}); 
 });
 
 /* déconnexion */
@@ -215,13 +256,13 @@ app.listen(3000, () => console.log('listening on http://localhost:3000'));
 /* MIDDLEWARES */
 /* Gestion de la session */
 function is_authenticated(req, res, next) {
-  if (req.session.user != null) { res.locals.authenticated = true; }
+  if (req.session.user != null && model.getUser(req.session.user) != undefined) { res.locals.authenticated = true; }
   else { res.locals.authenticated = false; }
   next();
 }
 
 function is_authenticated_force(req, res, next) {
-  if (req.session.user == null) { res.status(401).send("authentication Required"); }
+  if (req.session.user == null  && model.getUser(req.session.user) != undefined) { res.status(401).send("authentication Required"); }
   else { next(); }
 };
 

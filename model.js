@@ -6,20 +6,20 @@ let db = new Sqlite('db.sqlite');
 /* Fonctions relatives a la conenction */
 exports.login = (email, password) => {
   var login = db.prepare('SELECT id FROM users WHERE (email = ? AND password = ?)').get(email, password);
-  if(login == undefined) return -1;
+  if(login == undefined) return undefined;
   return login.id;
 }
 
 exports.new_user = (name, email, password) => {
-	//car auto increment marche pas
-	var rowCount = db.prepare('SELECT COUNT(id) count FROM USERS');
+  //car auto increment marche pas
+  var rowCount = db.prepare('SELECT COUNT(id) count FROM USERS');
   var add = db.prepare('INSERT INTO users (id, name, email, password, lvl, fanlvl, heartReceived, brokenHeartReceived, heartGiven, brokenheartGiven, messageCount, commentCount, userCategory) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').run(rowCount.get().count, name, email, password, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  	return add.lastInsertRowid-1;
+    return add.lastInsertRowid-1;
 }
 
 /* Fonctions relatives a l'accès de données utilisateur */
 exports.fetchUserInformations = (id) => {
-	var user = db.prepare('SELECT name, email, userCategory FROM users WHERE (id = ?)').get(id);
+  var user = db.prepare('SELECT id, name, email, userCategory FROM users WHERE (id = ?)').get(id);
   //add from external table
   user.heartGiven = db.prepare('SELECT count(isBroken) count FROM heartrelmsg WHERE userId = ? AND isBroken = 0').get(id).count + db.prepare('SELECT count(isBroken) count FROM heartrelcom WHERE userId = ? AND isBroken = 0').get(id).count;
   user.brokenHeartGiven = db.prepare('SELECT count(isBroken) count FROM heartrelmsg WHERE userId = ? AND isBroken = 1').get(id).count + db.prepare('SELECT count(isBroken) count FROM heartrelcom WHERE userId = ? AND isBroken = 1').get(id).count;
@@ -59,7 +59,13 @@ function getName(id) {
 
 exports.getUser = (id) => {
   var user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
-  if(user != -1) return user;
+  if(user != undefined) return user;
+}
+
+exports.emailExist = (email) => {
+  var id = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+  if(id == undefined) return false;
+  return true;
 }
 
 /* Fonctions relatives a l'accès de données messages */
@@ -68,7 +74,7 @@ exports.new_message = (userId, message, category) => {
   var rowCount = db.prepare('SELECT MAX(id) count FROM messages');
   var date = todayDate();
   var userName = getName(userId);
-  if (userName == -1) return;
+  if (userName == undefined) return;
   var add = db.prepare('INSERT INTO messages (id, userName, userID, date, content, category, heart, brokenheart) VALUES(?, ?, ?, ?, ?, ?, ?, ?)').run(rowCount.get().count+1, userName, userId, date, message, category, 0, 0);
   var userMessages = db.prepare('SELECT messageCount from users where id = ?').get(userId);
   userMessages = userMessages.messageCount;
@@ -78,7 +84,7 @@ exports.new_message = (userId, message, category) => {
 
 exports.new_comment = (userId, messageId, comment) => {
   //car auto increment marche pas
-  if (userId == -1 || messageId == -1) return;
+  if (userId == undefined || messageId == undefined) return;
   var rowCount = db.prepare('SELECT MAX(id) count FROM comments').get();
   var date = todayDate();
   var userName = getName(userId);
@@ -91,12 +97,17 @@ exports.new_comment = (userId, messageId, comment) => {
 
 exports.getMessagesFrom = (id) => {
     var messagesfrom = db.prepare('SELECT * FROM messages WHERE userId = ?').all(id);
-    if (messagesfrom != -1) return messagesfrom;
+    if (messagesfrom != undefined) return messagesfrom;
+}
+
+exports.getUserFrom = (id) => {
+    var userfrom = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+    if (userfrom != undefined) return userfrom;
 }
 
 exports.getMessages = () => {
   var messages = db.prepare('SELECT * FROM messages ORDER BY id DESC').all();
-  if(messages != -1) return messages;
+  if(messages != undefined) return messages;
 }
 
 exports.getMessage = (id) => {
@@ -112,12 +123,12 @@ exports.deleteMessage = (id) => {
 
 exports.getComments = (id) => {
   var comments = db.prepare('SELECT * FROM comments WHERE messageid = ? ORDER BY id DESC').all(id);
-  if(comments != -1) return comments;
+  if(comments != undefined) return comments;
 }
 
 exports.getComment = (id) => {
   var comment = db.prepare('SELECT * FROM comments WHERE id = ?').get(id);
-  if(comment != -1) return comment;
+  if(comment != undefined) return comment;
 }
 
 exports.deleteComment = (id) => {
@@ -163,51 +174,6 @@ exports.getHearts = (messages, isComment) => {
   return messages;
 }
 
-/* Fonctions leaderboards */
-/* TODO A FACTORISER AVEC PARAMS */
-exports.goCount = () => {
-  var goCount = db.prepare('SELECT userName, userId, count(id) messageCount FROM messages GROUP BY userName, userId ORDER BY messageCount DESC LIMIT 10').all();
-  if(goCount != -1) return goCount;
-}
-
-exports.goLike = () => {
-  //TODO
-  var goLike = db.prepare('SELECT ((SELECT Sum(isBroken=0) sum FROM heartrelmsg)+(SELECT Sum(isBroken=0) sum FROM heartRelCom)) sum').all();
-  //var goLike = db.prepare('SELECT name, users.Id, sum(B.isBroken=0) heartReceived FROM ()  GROUP BY name, users.Id ORDER BY heartReceived DESC LIMIT 10').all();
-  if(goLike != -1) return goLike;
-}
-
-exports.notLike = () => {
-  var notLike = db.prepare('SELECT name, id, brokenheartReceived FROM users WHERE brokenheartReceived > 0 ORDER BY brokenheartReceived DESC LIMIT 10').all();
-  if(notLike != -1) return notLike;
-}
-
-exports.goFan = () => {
-  var goFan = db.prepare('SELECT name, id, sum(isBroken=0) heartGiven FROM (heartrelmsg JOIN users ON heartrelmsg.userId = users.id) GROUP BY name, id ORDER BY heartGiven DESC LIMIT 10').all();
-  if(goFan != -1) return goFan;
-}
-
-exports.notFan = () => {
-  var notFan = db.prepare('SELECT name, id, sum(isBroken=1) brokenheartGiven FROM (heartrelmsg JOIN users ON heartrelmsg.userId = users.id) GROUP BY name, id ORDER BY brokenheartGiven DESC LIMIT 10').all();
-  if(notFan != -1) return notFan;
-}
-
-exports.goBest = (id) => {
-  var goBest = db.prepare('SELECT id, userName, messages.userId, date, content, category, sum(isBroken=0) heart, sum(isBroken=1) brokenheart FROM (messages JOIN heartrelmsg ON messages.id = heartrelmsg.messageid) GROUP BY id, userName, messages.userId, date, content, category ORDER BY heart DESC LIMIT 10').all();
-  if(goBest != -1) return goBest;
-}
-
-exports.notBest = (id) => {
-  var notBest = db.prepare('SELECT id, userName, messages.userId, date, content, category, sum(isBroken=0) heart, sum(isBroken=1) brokenheart FROM (messages JOIN heartrelmsg ON messages.id = heartrelmsg.messageid) GROUP BY id, userName, messages.userId, date, content, category ORDER BY brokenheart DESC LIMIT 10').all();
-  if(notBest != -1) return notBest;
-}
-
-exports.goMment = (id) => {
-  //not work on heart, some issues
-  var goMment = db.prepare('SELECT messages.id id, messages.userName userName, messages.userId userId, messages.date date, messages.content content, category, sum(heartrelmsg.isBroken=0) heart, sum(heartrelmsg.isBroken=1) brokenheart, count(messages.id) counter FROM ((comments JOIN messages ON comments.messageId = messages.id) A JOIN heartrelmsg ON A.messageId = heartrelmsg.messageId) GROUP BY messages.id, messages.userName, messages.userId, messages.date, messages.content, category ORDER BY counter DESC LIMIT 10').all();
-  if(goMment != -1) return goMment;
-}
-
 /* Fonction pour la supression disponible si l'utilisateur est le bon ou a les droits */
 exports.addIsFromUser = (messages, id) => {
   var usercategory = db.prepare('SELECT usercategory FROM users WHERE (id = ?)').get(id).userCategory;
@@ -215,6 +181,33 @@ exports.addIsFromUser = (messages, id) => {
   catch(error) { messages.isFromUser = (id == messages.userId || usercategory == 2 || (usercategory == 1 && fetchUserCategory(messages.userId).userCategory == 0)); }
   return messages;
 }
+
+/* Fonction pour la suprpession du compte disponible si l'utilisateur est le bon ou a les droits */
+exports.canDelete = (viewUser, id) => {
+ var usercategory = db.prepare('SELECT usercategory FROM users WHERE (id = ?)').get(id).userCategory;
+ viewUser.canDelete = (id == viewUser.id || usercategory == 2 || (usercategory == 1 && fetchUserCategory(viewUser.id).userCategory == 0));
+  return viewUser;
+}
+
+exports.deleteUser = (id) =>{
+   db.prepare('DELETE FROM users WHERE id = ?').run(id);
+   db.prepare('DELETE FROM messages WHERE userId = ?').run(id);
+   db.prepare('DELETE FROM comments WHERE userId = ?').run(id);
+   db.prepare('DELETE FROM heartrelMsg WHERE userId = ?').run(id);
+   db.prepare('DELETE FROM heartrelCom WHERE userId = ?').run(id);
+}
+
+/* Fonction de recherche */
+exports.getMessagesCategory = (category) => {
+    var messages = db.prepare('SELECT * FROM messages WHERE category = ? COLLATE NOCASE ORDER BY id DESC').all(category);
+  if(messages != undefined) return messages;
+}
+
+exports.getMessagesContains = (keyword) => {
+    var messages = db.prepare('SELECT * FROM messages WHERE content LIKE \'%'+'?'+'%\' COLLATE NOCASE ORDER BY id DESC').all(keyword);
+  if(messages != undefined) return messages;
+}
+
 
 /* Fonctions relativex aux dates */
 function todayDate() {
@@ -225,6 +218,74 @@ function todayDate() {
   today = mm+'/'+dd+'/'+yyyy;
   return today;
 } 
+
+/* Fonctions leaderboards */
+/* TODO A FACTORISER AVEC PARAMS */
+exports.goCount = () => {
+  var goCount = db.prepare('SELECT userName, userId, count(id) messageCount FROM messages GROUP BY userName, userId ORDER BY messageCount DESC LIMIT 10').all();
+  if(goCount.lenght != undefined) return goCount;
+}
+
+exports.goLike = () => {
+  //TODO
+  var goLike = db.prepare('SELECT ((SELECT Sum(isBroken=0) sum FROM heartrelmsg)+(SELECT Sum(isBroken=0) sum FROM heartRelCom)) sum').all();
+  //var goLike = db.prepare('SELECT name, users.Id, sum(B.isBroken=0) heartReceived FROM ()  GROUP BY name, users.Id ORDER BY heartReceived DESC LIMIT 10').all();
+  if(goLike != undefined) return goLike;
+}
+
+exports.notLike = () => {
+  var notLike = db.prepare('SELECT name, id, brokenheartReceived FROM users WHERE brokenheartReceived > 0 ORDER BY brokenheartReceived DESC LIMIT 10').all();
+  if(notLike != undefined) return notLike;
+}
+
+exports.goFan = () => {
+  var goFan = db.prepare('SELECT name, id, sum(isBroken=0) heartGiven FROM (heartrelmsg JOIN users ON heartrelmsg.userId = users.id) GROUP BY name, id ORDER BY heartGiven DESC LIMIT 10').all();
+  if(goFan != undefined) return goFan;
+}
+
+exports.notFan = () => {
+  var notFan = db.prepare('SELECT name, id, sum(isBroken=1) brokenheartGiven FROM (heartrelmsg JOIN users ON heartrelmsg.userId = users.id) GROUP BY name, id ORDER BY brokenheartGiven DESC LIMIT 10').all();
+  if(notFan != undefined) return notFan;
+}
+
+exports.goBest = (id) => {
+  var goBest = db.prepare('SELECT id, userName, messages.userId, date, content, category, sum(isBroken=0) heart, sum(isBroken=1) brokenheart FROM (messages JOIN heartrelmsg ON messages.id = heartrelmsg.messageid) GROUP BY id, userName, messages.userId, date, content, category ORDER BY heart DESC LIMIT 10').all();
+  if(goBest != undefined) return goBest;
+}
+
+exports.notBest = (id) => {
+  var notBest = db.prepare('SELECT id, userName, messages.userId, date, content, category, sum(isBroken=0) heart, sum(isBroken=1) brokenheart FROM (messages JOIN heartrelmsg ON messages.id = heartrelmsg.messageid) GROUP BY id, userName, messages.userId, date, content, category ORDER BY brokenheart DESC LIMIT 10').all();
+  if(notBest != undefined) return notBest;
+}
+
+exports.goMment = (id) => {
+  //not work on heart, some issues
+  var goMment = db.prepare('SELECT messages.id id, messages.userName userName, messages.userId userId, messages.date date, messages.content content, category, sum(heartrelmsg.isBroken=0) heart, sum(heartrelmsg.isBroken=1) brokenheart, count(messages.id) counter FROM ((comments JOIN messages ON comments.messageId = messages.id) A JOIN heartrelmsg ON A.messageId = heartrelmsg.messageId) GROUP BY messages.id, messages.userName, messages.userId, messages.date, messages.content, category ORDER BY counter DESC LIMIT 10').all();
+  if(goMment != undefined) return goMment;
+}
+
+/* Fonction pour la supression disponible si l'utilisateur est le bon ou a les droits */
+exports.addIsFromUser = (messages, id) => {
+  var usercategory = db.prepare('SELECT usercategory FROM users WHERE (id = ?)').get(id).userCategory;
+  try { messages.forEach((item) => (item.isFromUser = (id == item.userId || usercategory == 2 || (usercategory == 1 && fetchUserCategory(item.userId).userCategory == 0)))); }
+  catch(error) { messages.isFromUser = (id == messages.userId || usercategory == 2 || (usercategory == 1 && fetchUserCategory(messages.userId).userCategory == 0)); }
+  return messages;
+}
+
+
+/*  MEMO  */
+/*
+CREATE TABLE users (id INTEGER NOT NULL, email TEXT, name TEXT, password TEXT, lvl INTEGER, fanlvl INTEGER, heartReceived INTEGER, brokenHeartReceived INTEGER, heartGiven INTEGER, brokenHeartGiven INTEGER, messageCount INTEGER, commentCount INTEGER, userCategory INTEGER,
+PRIMARY KEY (id, email));
+
+CREATE TABLE messages (id INTEGER PRIMARY KEY, userName TEXT, userId INTEGER, date TEXT, content TEXT, category TEXT, heart INTEGER, brokenheart INTEGER);
+
+CREATE TABLE comments (id INTEGER NOT NULL, messageId INTEGER NOT NULL, userName TEXT, userId INTEGER, date TEXT, content TEXT, heart INTEGER, brokenheart INTEGER, PRIMARY KEY(id, messageId));
+
+CREATE TABLE heartRelMsg (messageid INTEGER, userid INTEGER, isBroken INTEGER, PRIMARY KEY(messageid, userid));
+
+CREATE TABLE heartRelCom (commentid INTEGER, userid INTEGER, isBroken INTEGER, PRIMARY KEY(commentid, userid));
+*/
 
 /*  MEMO  */
 /*

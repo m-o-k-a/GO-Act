@@ -1,9 +1,5 @@
 {{> header}}
 
-<div class="jumbotron mx-auto m-0 p-0 text-center">
-	<b><a href="/leaderboards" class="text-second text-hover-second">Access the Leaderboards and see the best Go'Actors!</a></b>
-</div>
-<br>
 <div class="jumbotron mx-auto pt-4">
 	<div class="messagesBox-send">
 		<h6 class="text-first">Share:</h6>
@@ -12,7 +8,7 @@
   			<div class="row align-items-start">
     			<div class="col-lg">
     				<p class="text-second">Message:</h6>
-					<textarea id="message_content" name="message_content" form="form_message" class="text-third w-100" spellcheck=true maxlength="240" rows="3" placeholder="I saved a panda today! Then fed it with bamboo, 나는 판다를 좋아해! (-^〇^-)" required></textarea>
+					<textarea id="message_content" name="message_content" form="form_message" class="text-third w-100" spellcheck=true rows="3" placeholder="I saved a panda today! Then fed it with bamboo, 나는 판다를 좋아해! (-^〇^-)" required></textarea>
     			</div>
     			<div class="col-sm">
     			<p class="text-second">Category:</h6>
@@ -35,24 +31,12 @@
   					</div>
   						<a href="/message/{{id}}"><div class="card-body">
     						<p class="card-text text-second">{{content}}</p><hr>
-    						<p class="card-text text-third"><a class="text-third text-hover-third"><i>category: {{category}}</i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
+    						<p class="card-text text-third"><a href="/category/{{category}}" class="text-third text-hover-third"><i>category: {{category}} </i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
     					</div></a>
     			</div>
     			<br>
 			{{/messages}}
 	</div>
 </div>
-
-<script>
-$(document).scroll(function () {
-    var y = $(this).scrollTop();
-    if (y > 100) {
-        $('.to_top').fadeIn();
-    } else {
-        $('to_top').fadeOut();
-    }
-
-});
-</script>
 
 {{> footer}}

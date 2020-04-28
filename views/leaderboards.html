@@ -1,9 +1,5 @@
 {{> header}}
 
-<div class="jumbotron mx-auto m-0 p-0 text-center">
-  <b><a href="/leaderboards" class="text-second text-hover-second">Access the Leaderboards and see the best Go'Actors!</a></b>
-</div>
-<br>
 <div class="jumbotron pt-4">
     <h6 class="text-first">Go'Count! <p class="text-second">Who made the most go'Actions:</p></h6>
     <hr>
@@ -43,7 +39,7 @@
           <div class="card-header text-first"><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
             <a href="/message/{{userId}}"><div class="card-body">
               <p class="card-text text-second">{{content}}</p><hr>
-                <p class="card-text text-third"><a class="text-third text-hover-third"><i>category: {{category}}</i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
+                <p class="card-text text-third"><a href="/category/{{category}}" class="text-third text-hover-third"><i>category: {{category}} </i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
             </div></a>
         </div>
         <br>

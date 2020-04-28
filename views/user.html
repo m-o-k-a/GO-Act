@@ -1,18 +1,29 @@
 {{> header}}
 
-<div class="jumbotron mx-auto m-0 p-0 text-center">
-    <b><a href="/leaderboards" class="text-second text-hover-second">Access the Leaderboards and see the best Go'Actors!</a></b>
-</div>
-<br>
 <div class="jumbotron pt-4">
-    <h6 class="text-first">Go'Actor <a href="/user/{{viewUserId}}" class="text-first text-hover-first">{{viewUser.name}}</a></h6>
+    <img class="mb-3 float-left" src="{{viewUser.profilePic}}" alt="" width="25" height="25">
+    <h6 class="text-first"> Go'Actor <a href="/user/{{viewUserId}}" class="text-first text-hover-first">{{viewUser.name}}</a></h6>
     <hr>
     <div class="card w-100 messages">
         <div class="card-body">
-            <p class="card-text text-second"><i>Messages : {{viewUser.messageCount}}<br><br>Comments : {{viewUser.commentCount}}<br><br>Hearts Received 💕: {{viewUser.heartReceived}}</i></p>
+            <p class="card-text">
+            <div class="row">
+                <div class="col">
+                    <i class="text-second">Messages : {{viewUser.messageCount}}<br>Comments : {{viewUser.commentCount}}</i>
+                </div>
+                <div class="col">
+                    <i class="text-second">Given 💕: {{viewUser.heartGiven}} / Received 💕: {{viewUser.heartReceived}}<br>Given 💔: {{viewUser.brokenHeartGiven}} / Received 💔: {{viewUser.brokenHeartReceived}}</i>
+                </div>
+            </div>
+            </p>
         </div>
     </div>
+    {{#viewUser.canDelete}}
+        <a href="/delete/user/{{viewUser.id}}" class="text-third text-hover-third" ><i>Do you want to delete Account..?</i></a>
+    {{/viewUser.canDelete}}
+    <hr>
 </div>
+
 <br>
 <div class="jumbotron pt-4">
     <h6 class="text-first"> {{viewUser.name}} Messages:</h6>
@@ -20,7 +31,7 @@
     <div class="w-100">
         {{#messages}}
         <div class="card w-100 messages card-message">
-            <div class="card-header text-first"><a href="/delete/message/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{viewUserName}}</u></a> | {{date}}</div>
+            <div class="card-header text-first"><a href="/delete/message/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
             <a href="/message/{{id}}"><div class="card-body">
                 <p class="card-text text-second">{{content}}</p><hr>
                 <p class="card-text text-third"><a class="text-third text-hover-third"><i>category: {{category}}</i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>

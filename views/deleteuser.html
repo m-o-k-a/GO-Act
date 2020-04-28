@@ -1,0 +1,36 @@
+{{> header}}
+
+<div class="jumbotron pt-4">
+    <img class="mb-3 float-left" src="{{viewUser.profilePic}}" alt="" width="25" height="25">
+    <h6 class="text-first"> Go'Actor <a href="/user/{{viewUserId}}" class="text-first text-hover-first">{{viewUser.name}}</a></h6>
+    <hr>
+    <div class="card w-100 messages">
+        <div class="card-body">
+            <p class="card-text">
+            <div class="row">
+                <div class="col">
+                    <i class="text-second">Messages : {{viewUser.messageCount}}<br>Comments : {{viewUser.commentCount}}</i>
+                </div>
+                <div class="col">
+                    <i class="text-second">Given 💕: {{viewUser.heartGiven}} / Received 💕: {{viewUser.heartReceived}}<br>Given 💔: {{viewUser.brokenHeartGiven}} / Received 💔: {{viewUser.brokenHeartReceived}}</i>
+                </div>
+            </div>
+            </p>
+        </div>
+    </div>
+    <br>
+    <div class="messagesBox-send">
+        <hr>
+        <div class="row">
+            <div class="col-sm">
+                <form id="form_delete" action="/delete/user/{{viewUser.id}}" method="POST">
+                    <button class="btn btn-lg btn-primary btn-block bkg-third bkg-hover-third" type="submit">Delete Go'Actor {{viewUser.name}}</button>
+                </form>
+                <a href="/"><button class="btn btn-lg btn-primary btn-block bkg-third bkg-hover-third">Go back to Dashboard</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{{> footer}}

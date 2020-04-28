@@ -105,13 +105,8 @@ exports.getUserFrom = (id) => {
     if (userfrom != undefined) return userfrom;
 }
 
-exports.getUserFrom = (id) => {
-    var userfrom = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
-    if (userfrom != -1) return userfrom;
-}
-
 exports.getMessages = () => {
-  var messages = db.prepare('SELECT * FROM messages ORDER BY id DESC').all();
+  var messages = db.prepare('SELECT * FROM messages ORDER BY id DESC LIMIT 1000').all();
   if(messages != undefined) return messages;
 }
 
@@ -222,7 +217,7 @@ function todayDate() {
   var yyyy = today.getFullYear();
   today = mm+'/'+dd+'/'+yyyy;
   return today;
-}
+} 
 
 /* Fonctions leaderboards */
 /* TODO A FACTORISER AVEC PARAMS */

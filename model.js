@@ -94,6 +94,11 @@ exports.getMessagesFrom = (id) => {
     if (messagesfrom != -1) return messagesfrom;
 }
 
+exports.getUserFrom = (id) => {
+    var userfrom = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+    if (userfrom != -1) return userfrom;
+}
+
 exports.getMessages = () => {
   var messages = db.prepare('SELECT * FROM messages ORDER BY id DESC').all();
   if(messages != -1) return messages;
@@ -163,6 +168,7 @@ exports.getHearts = (messages, isComment) => {
   return messages;
 }
 
+
 /* Fonctions leaderboards */
 /* TODO A FACTORISER AVEC PARAMS */
 exports.goCount = () => {
@@ -215,6 +221,22 @@ exports.addIsFromUser = (messages, id) => {
   catch(error) { messages.isFromUser = (id == messages.userId || usercategory == 2 || (usercategory == 1 && fetchUserCategory(messages.userId).userCategory == 0)); }
   return messages;
 }
+
+exports.canDelete = (users, id) => {
+ var usercategory = db.prepare('SELECT usercategory FROM users WHERE (id = ?)').get(id).userCategory;
+  try { users.forEach((item) => (item.isFromUser = (id == item.id || usercategory == 2 || (usercategory == 1 && fetchUserCategory(item.id).userCategory == 0)))); }
+  catch(error) { users = (id == users.id || usercategory == 2 || (usercategory == 1 && fetchUserCategory(users.id).userCategory == 0)); }
+  return users;
+}
+
+exports.deleteUser = (id) =>{
+   db.prepare('DELETE FROM users WHERE id = ?').run(id);
+   db.prepare('DELETE FROM messages WHERE id = ?').run(id);
+   db.prepare('DELETE FROM heartrelMsg WHERE messageId = ?').run(id);
+   db.prepare('DELETE FROM comments WHERE messageId = ?').run(id);
+   db.prepare('DELETE FROM heartrelCom WHERE commentId = ?').run(id);
+}
+
 
 /* Fonctions relativex aux dates */
 function todayDate() {

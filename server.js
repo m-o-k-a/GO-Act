@@ -72,11 +72,11 @@ app.post('/sign-up', (req, res) => {
 
 /* dashboard */
 app.get('/dashboard', is_authenticated, (req, res) => {
-  if(res.locals.authenticated) { 
+  if(res.locals.authenticated) {
     var user = model.fetchUserInformations(req.session.user);
     var messagesList = model.addIsFromUser(model.getMessages(), req.session.user);
     messagesList = model.getHearts(messagesList, 0);
-    res.render('dashboard', {id: req.session.user, messages: messagesList, userData: user}); 
+    res.render('dashboard', {id: req.session.user, messages: messagesList, userData: user});
   }
   else { res.redirect('/'); }
 });
@@ -129,30 +129,30 @@ app.post('/send-comment/:id', (req, res) => {
 
 /* Page de message */
 app.get('/message/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) { 
+  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) {
     var message = model.addIsFromUser(model.getMessage(req.params.id), req.session.user);
     message = model.getHearts(message, 0);
     var comment = model.addIsFromUser(model.getComments(message.id), req.session.user);
     comment = model.getHearts(comment, 1);
     var user = model.fetchUserInformations(req.session.user);
-    res.render('message', {messageData: message, commentData: comment, id: req.session.user, userData: user}); 
+    res.render('message', {messageData: message, commentData: comment, id: req.session.user, userData: user});
   }
   else { res.redirect('/'); }
 });
 
 /* Suppression de message */
 app.get('/delete/message/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) { 
+  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) {
     var message = model.addIsFromUser(model.getMessage(req.params.id), req.session.user);
     message = model.getHearts(message, 0);
     if (!message.isFromUser) res.redirect('/');
     var user = model.fetchUserInformations(req.session.user);
-    res.render('deletemessage', {messageData: message, id: req.session.user, userData: user}); 
+    res.render('deletemessage', {messageData: message, id: req.session.user, userData: user});
   }
   else { res.redirect('/'); }
 });
 app.post('/delete/message/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) { 
+  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) {
     var message = model.addIsFromUser(model.getMessage(req.params.id), req.session.user);
     if (!message.isFromUser) res.redirect('/');
     model.deleteMessage(req.params.id);
@@ -161,17 +161,17 @@ app.post('/delete/message/:id', is_authenticated, (req, res) => {
 });
 
 app.get('/delete/comment/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.getComment(req.params.id) != undefined) { 
+  if(res.locals.authenticated && model.getComment(req.params.id) != undefined) {
     var comment = model.addIsFromUser(model.getComment(req.params.id), req.session.user);
     comment = model.getHearts(comment, 1);
     if (!comment.isFromUser) res.redirect('/');
     var user = model.fetchUserInformations(req.session.user);
-    res.render('deletecomment', {commentData: comment, id: req.session.user, userData: user}); 
+    res.render('deletecomment', {commentData: comment, id: req.session.user, userData: user});
   }
   else { res.redirect('/'); }
 });
 app.post('/delete/comment/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.getComment(req.params.id) != undefined) { 
+  if(res.locals.authenticated && model.getComment(req.params.id) != undefined) {
     var message = model.addIsFromUser(model.getComment(req.params.id), req.session.user);
     var messageId;
     if (!message.isFromUser) res.redirect('/');
@@ -183,14 +183,14 @@ app.post('/delete/comment/:id', is_authenticated, (req, res) => {
 
 /* Gestion de coeurs */
 app.get('/addHeart/message/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) { 
+  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) {
     model.addHeart(req.session.user, req.params.id, 0, 0);
     res.redirect('back');
   }
   else { res.redirect('/'); }
 });
 app.get('/addBrokenHeart/message/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) { 
+  if(res.locals.authenticated && model.getMessage(req.params.id) != undefined) {
     model.addHeart(req.session.user, req.params.id, 1, 0);
     res.redirect('back');
   }
@@ -198,14 +198,14 @@ app.get('/addBrokenHeart/message/:id', is_authenticated, (req, res) => {
 });
 
 app.get('/addHeart/comment/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.getComment(req.params.id) != undefined) { 
+  if(res.locals.authenticated && model.getComment(req.params.id) != undefined) {
     model.addHeart(req.session.user, req.params.id, 0, 1);
     res.redirect('back');
   }
   else { res.redirect('/'); }
 });
 app.get('/addBrokenHeart/comment/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.getComment(req.params.id) != undefined) { 
+  if(res.locals.authenticated && model.getComment(req.params.id) != undefined) {
     model.addHeart(req.session.user, req.params.id, 1, 1);
     res.redirect('back');
   }
@@ -224,7 +224,7 @@ app.get('/leaderboards', (req, res) => {
   var bheartR = model.notLike();
   var bheartG = model.notFan();
   var badmessages = model.notBest();
-  res.render('leaderboards', {id: req.session.user, goCount: count, goLike: heartR, goFan: heartG, goBest: messages, goMment: comments, notLike: bheartR, notFan: bheartG, notBest: badmessages, userData: user}); 
+  res.render('leaderboards', {id: req.session.user, goCount: count, goLike: heartR, goFan: heartG, goBest: messages, goMment: comments, notLike: bheartR, notFan: bheartG, notBest: badmessages, userData: user});
 });
 
 /* Categorie */
@@ -233,7 +233,7 @@ app.get('/category/:cat', is_authenticated, (req, res) => {
   var user = model.fetchUserInformations(req.session.user);
   var messagesList = model.addIsFromUser(model.getMessagesCategory(req.params.cat), req.session.user);
   messagesList = model.getHearts(messagesList, 0);
-  res.render('category', {id: req.session.user, messages: messagesList, userData: user, category: req.params.cat}); 
+  res.render('category', {id: req.session.user, messages: messagesList, userData: user, category: req.params.cat});
 });
 
 /* Recherche */
@@ -242,13 +242,13 @@ app.get('/search', is_authenticated, (req, res) => {
   var user = model.fetchUserInformations(req.session.user);
   var messagesCategory = model.getHearts(model.addIsFromUser(model.getMessagesCategory(req.query["q"]), req.session.user), 0);
   var messagesContains = model.getHearts(model.addIsFromUser(model.getMessagesContains(req.query["q"]), req.session.user), 0);
-  res.render('search', {id: req.session.user, messagesCategory: messagesCategory, messagescontains: messagesContains, userData: user, query: req.query["q"]}); 
+  res.render('search', {id: req.session.user, messagesCategory: messagesCategory, messagescontains: messagesContains, userData: user, query: req.query["q"]});
 });
 
 /* déconnexion */
 app.get('/logout', is_authenticated_force, (req, res) => {
   req.session.user = null;
-  res.redirect('/'); 
+  res.redirect('/');
 });
 
 app.listen(3000, () => console.log('listening on http://localhost:3000'));
@@ -265,4 +265,3 @@ function is_authenticated_force(req, res, next) {
   if (req.session.user == null  && model.getUser(req.session.user) != undefined) { res.status(401).send("authentication Required"); }
   else { next(); }
 };
-

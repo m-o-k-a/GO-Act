@@ -39,6 +39,7 @@ function comparePassword(password, saved_hash) {
 /* Function about user data */
 exports.fetchUserInformations = (id) => {
   var user = db.prepare('SELECT id, name, email, userCategory FROM users WHERE (id = ?)').get(id);
+  if(user == undefined) return undefined;
   //append to user item from external table
   user.heartGiven = db.prepare('SELECT count(isBroken) count FROM heartrelmsg WHERE userId = ? AND isBroken = 0').get(id).count + db.prepare('SELECT count(isBroken) count FROM heartrelcom WHERE userId = ? AND isBroken = 0').get(id).count;
   user.brokenHeartGiven = db.prepare('SELECT count(isBroken) count FROM heartrelmsg WHERE userId = ? AND isBroken = 1').get(id).count + db.prepare('SELECT count(isBroken) count FROM heartrelcom WHERE userId = ? AND isBroken = 1').get(id).count;

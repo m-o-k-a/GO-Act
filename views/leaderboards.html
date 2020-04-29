@@ -1,102 +1,70 @@
 {{> header}}
 
 <div class="jumbotron pt-4">
-    <h6 class="text-first">Go'Count! <p class="text-second">Who made the most go'Actions:</p></h6>
-    <hr>
-    <div>
-      <ol>
-        {{#goCount}}
-          <li><a href="/user/{{userId}}" class="text-first text-hover-first">{{userName}}</a> ({{messageCount}})</li>
-        {{/goCount}}
+  <h6 class="text-first">Go'Count! <p class="text-second">Who made the most go'Actions:</p></h6>
+  <hr>
+  <div>
+    <ol>
+      {{#goCount}}
+      <li><a href="/user/{{userId}}" class="text-first text-hover-first">{{userName}}</a> ({{messageCount}})</li>
+      {{/goCount}}
     </ol>
-    </div>
-    <h6 class="text-first">Go'Like! <p class="text-second">Who received the most hearts:</p></h6>
-    <hr>
-    <div>
-      <ol>
-        {{#goLike}}
-          <li><a href="/user/{{userId}}" class="text-first text-hover-first">{{name}}</a> ({{heartReceived}})</li>
-        {{/goLike}}
-      </ol>
-    </div>
-    <h6 class="text-first">Go'Fan! <p class="text-second">Who liked the most go'Actions:</p></h6>
-    <hr>
-    <div>
-      <ol>
-        {{#goFan}}
-          <li><a href="/user/{{id}}" class="text-first text-hover-first">{{name}}</a> ({{heartGiven}})</li>
-        {{/goFan}}
-      </ol>
-    </div>
+  </div>
+  <h6 class="text-first">Go'Fan! <p class="text-second">Who liked the most go'Actions:</p></h6>
+  <hr>
+  <div>
+    <ol>
+      {{#goFan}}
+      <li><a href="/user/{{id}}" class="text-first text-hover-first">{{name}}</a> ({{heartGiven}})</li>
+      {{/goFan}}
+    </ol>
+  </div>
 </div>
 <br>
 <div class="jumbotron pt-4">
-    <h6 class="text-first">Go'Best! <p class="text-second">The most liked go'Actions!:</p></h6>
-    <hr>
-    <div>
-      {{#goBest}}
-        <div class="card w-75 messages card-message">
-          <div class="card-header text-first"><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
-            <a href="/message/{{userId}}"><div class="card-body">
-              <p class="card-text text-second">{{content}}</p><hr>
-                <p class="card-text text-third"><a href="/category/{{category}}" class="text-third text-hover-third"><i>category: {{category}} </i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
-            </div></a>
-        </div>
-        <br>
-      {{/goBest}}
+  <h6 class="text-first">Go'Best! <p class="text-second">The most liked go'Actions!:</p></h6>
+  <hr>
+  <div>
+    {{#goBest}}
+      <div class="card w-75 messages card-message">
+        <div class="card-header text-first"><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
+        <a href="/message/{{userId}}"><div class="card-body">
+          <p class="card-text text-second">{{content}}</p><hr>
+          <p class="card-text text-third"><a href="/category/{{category}}" class="text-third text-hover-third"><i>category: {{category}} </i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
+      </div></a>
     </div>
-    <h6 class="text-first">Go'Mment! <p class="text-second">The most commented go'Actions!:</p></h6>
-    <hr>
-    <div>
-      {{#goMment}}
-        <div class="card w-75 messages card-message">
-          <div class="card-header text-first"><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
-            <a href="/message/{{userId}}"><div class="card-body">
-              <p class="card-text text-second">{{content}}</p><hr>
-                <p class="card-text text-third"><a class="text-third text-hover-third"><i>category: {{category}}</i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
-            </div></a>
-        </div>
-        <br>
-      {{/goMment}}
-    </div>
+    <br>
+    {{/goBest}}
+  </div>
 </div>
 <br>
 <div class="jumbotron pt-4">
-    <h6 class="text-danger">Not'Like! <p class="text-danger">Who received the most broken hearts:</p></h6>
-    <hr>
-    <div>
-      <ol>
-        {{#notLike}}
-          <li><a href="/user/{{id}}" class="text-danger">{{name}}</a> ({{brokenheartReceived}})</li>
-        {{/notLike}}
-      </ol>
-    </div>
-    <h6 class="text-danger">Not'Fan! <p class="text-danger">Who disliked the most go'Actions:</p></h6>
-    <hr>
-    <div>
-      <ol>
-        {{#notFan}}
-          <li><a href="/user/{{id}}" class="text-danger">{{name}}</a> ({{brokenheartGiven}})</li>
-        {{/notFan}}
-      </ol>
-    </div>
+  <h6 class="text-danger">Not'Fan! <p class="text-danger">Who disliked the most go'Actions:</p></h6>
+  <hr>
+  <div>
+    <ol>
+      {{#notFan}}
+      <li><a href="/user/{{id}}" class="text-danger">{{name}}</a> ({{brokenheartGiven}})</li>
+      {{/notFan}}
+    </ol>
+  </div>
 </div>
 <br>
 <div class="jumbotron pt-4">
-    <h6 class="text-danger">Not'Best! <p class="text-danger">The most disliked go'Actions!:</p></h6>
-    <hr>
-    <div>
-      {{#notBest}}
-        <div class="card w-75 messages card-message">
-          <div class="card-header text-first"><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
-            <a href="/message/{{userId}}"><div class="card-body">
-              <p class="card-text text-second">{{content}}</p><hr>
-                <p class="card-text text-third"><a class="text-third text-hover-third"><i>category: {{category}}</i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
-            </div></a>
-        </div>
-        <br>
-      {{/notBest}}
+  <h6 class="text-danger">Not'Best! <p class="text-danger">The most disliked go'Actions!:</p></h6>
+  <hr>
+  <div>
+    {{#notBest}}
+    <div class="card w-75 messages card-message">
+      <div class="card-header text-first"><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}</div>
+      <a href="/message/{{userId}}"><div class="card-body">
+        <p class="card-text text-second">{{content}}</p><hr>
+        <p class="card-text text-third"><a class="text-third text-hover-third"><i>category: {{category}}</i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
+      </div></a>
     </div>
+    <br>
+    {{/notBest}}
+  </div>
 </div>
 
 {{> footer}}

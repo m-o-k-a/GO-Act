@@ -5,18 +5,18 @@
 		<h6 class="text-first">Share:</h6>
 		<hr>
 		<form id="form_message" action="/send-message" method="POST">
-  			<div class="row align-items-start">
-    			<div class="col-lg">
-    				<p class="text-second">Message:</h6>
+  		<div class="row align-items-start">
+    		<div class="col-lg">
+    			<p class="text-second">Message:</p>
 					<textarea name="message_content" form="form_message" class="text-third w-100" spellcheck=true rows="3" placeholder="I saved a panda today! Then fed it with bamboo, 나는 판다를 좋아해! (-^〇^-)" required></textarea>
-    			</div>
-    			<div class="col-sm">
-    			<p class="text-second">Category:</h6>
+    		</div>
+    		<div class="col-sm">
+          <p class="text-second">Category:</p>
 				  <input name="message_category" class="messages text-third w-100" spellcheck=true rows="1" placeholder="animal" required>
         	<button class="btn btn-lg btn-primary btn-block bkg-second bkg-hover-second" type="submit">Submit</button>
-    			</div>
-  			</div>
-    	</form>
+    		</div>
+  		</div>
+    </form>
 	</div>
 </div>
 <br>
@@ -25,17 +25,20 @@
 		<hr>
 		<div class="w-100">
 			{{#messages}}
-				<div class="card w-100 messages card-message">
-  					<div class="card-header text-first">
-  						<a href="/delete/message/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}
-  					</div>
-  						<a href="/message/{{id}}"><div class="card-body">
-    						<p class="card-text text-second">{{content}}</p><hr>
-    						<p class="card-text text-third"><a href="/category/{{category}}" class="text-third text-hover-third"><i>category: {{category}} </i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
-    					</div></a>
-    			</div>
-    			<br>
+			<div class="card w-100 messages card-message">
+  			<div class="card-header text-first">
+  				<a href="/delete/message/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}
+  			</div>
+  			<a href="/message/{{id}}"><div class="card-body">
+    			<p class="card-text text-second">{{content}}</p><hr>
+    			<p class="card-text text-third"><a href="/category/{{category}}" class="text-third text-hover-third"><i>category: {{category}} </i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
+    		</div></a>
+    	</div>
+    	<br>
 			{{/messages}}
+      {{^messages}}
+        <p class="text-first">Nobody made a Go'Action yet ┏༼ ◉ ╭╮ ◉༽┓</a> 
+      {{/messages}}
 	</div>
 </div>
 

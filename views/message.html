@@ -1,28 +1,22 @@
 {{> header}}
 
-<div class="jumbotron mx-auto m-0 p-0 text-center">
-  <b><a href="/leaderboards" class="text-second text-hover-second">Access the Leaderboards and see the best Go'Actors!</a></b>
-</div>
-<br>
 <div class="jumbotron pt-4">
-    <h6 class="text-first"><a href="/delete/message/{{messageData.id}}" class="text-second text-hover-second">{{#messageData.isFromUser}}[X] {{/messageData.isFromUser}}</a>Go'Action! From <a href="/user/{{messageData.userId}}" class="text-third text-hover-third">{{messageData.userName}}</a> | {{messageData.date}}</h6>
-    <hr>
-    <div class="card w-100 messages">
-      <div class="card-body">
-        <p class="card-text text-second">{{messageData.content}}</p><hr>
-        <p class="card-text text-third"><a class="text-third text-hover-third"><i>category: {{messageData.category}}</i></a><a href="/addHeart/message/{{messageData.id}}" class="text-third text-hover-third">💕{{messageData.heart}}</a> <a href="/addBrokenHeart/message/{{messageData.id}}" class="text-third text-hover-third">💔{{messageData.brokenheart}}</a></p>
-
-
-      </div>
-    </div>
-  <div class="messagesBox-send">
+  <h6 class="text-first"><a href="/delete/message/{{messageData.id}}" class="text-second text-hover-second">{{#messageData.isFromUser}}[X] {{/messageData.isFromUser}}</a>Go'Action! From <a href="/user/{{messageData.userId}}" class="text-third text-hover-third">{{messageData.userName}}</a> | {{messageData.date}}</h6>
   <hr>
-  <form id="form_comment" action="/send-comment/{{messageData.id}}" method="POST">
-    <div class="row align-items-start">
-      <div class="col-lg">
-        <textarea id="comment_content" name="comment_content" form="form_comment" class="text-third w-100" spellcheck=true maxlength="240" rows="2" placeholder="What an inspiring Go'Action ! I want to do the same! 谢谢!" required></textarea>
-      </div>
-      <div class="col-sm">
+  <div class="card w-100 messages">
+    <div class="card-body">
+      <p class="card-text text-second">{{messageData.content}}</p><hr>
+      <p class="card-text text-third"><a class="text-third text-hover-third"><i>category: {{messageData.category}}</i></a><a href="/addHeart/message/{{messageData.id}}" class="text-third text-hover-third">💕{{messageData.heart}}</a> <a href="/addBrokenHeart/message/{{messageData.id}}" class="text-third text-hover-third">💔{{messageData.brokenheart}}</a></p>
+    </div>
+  </div>
+  <div class="messagesBox-send">
+    <hr>
+    <form id="form_comment" action="/send-comment/{{messageData.id}}" method="POST">
+      <div class="row align-items-start">
+        <div class="col-lg">
+          <textarea id="comment_content" name="comment_content" form="form_comment" class="text-third w-100" spellcheck=true maxlength="240" rows="2" placeholder="What an inspiring Go'Action ! I want to do the same! 谢谢!" required></textarea>
+        </div>
+        <div class="col-sm">
           <button class="btn btn-lg btn-primary btn-block bkg-third bkg-hover-third" type="submit">Comment!</button>
         </div>
       </div>
@@ -31,20 +25,20 @@
 </div>
 <br>
 <div class="jumbotron pt-4">
-    <h6 class="text-second">Comments:</h6>
-    <hr>
-    <div class="w-100">
-      {{#commentData}}
-        <div class="card w-100 messages">
-            <div class="card-header text-third"><a href="/delete/comment/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-third text-hover-third"><u>{{userName}}</u></a> | {{date}}</div>
-              <div class="card-body">
-                <p class="card-text text-third">{{content}}</p><hr>
-                <a href="/addHeart/comment/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/comment/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a>
-              </div>
-          </div>
-          <br>
-      {{/commentData}}
+  <h6 class="text-second">Comments:</h6>
+  <hr>
+  <div class="w-100">
+    {{#commentData}}
+    <div class="card w-100 messages">
+      <div class="card-header text-third"><a href="/delete/comment/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-third text-hover-third"><u>{{userName}}</u></a> | {{date}}</div>
+      <div class="card-body">
+        <p class="card-text text-third">{{content}}</p><hr>
+        <a href="/addHeart/comment/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/comment/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a>
+      </div>
     </div>
+    <br>
+    {{/commentData}}
+  </div>
 </div>
 
 {{> footer}}

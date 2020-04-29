@@ -1,39 +1,56 @@
 {{> header}}
 <div class="jumbotron pt-4">
-		<h6 class="text-first">Search Messages with the category: {{query}}</h6>
-		<hr>
-		<div class="w-100">
-			{{#messagesCategory}}
-				<div class="card w-100 messages card-message">
-  					<div class="card-header text-first">
-  						<a href="/delete/message/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}
-  					</div>
-  						<a href="/message/{{id}}"><div class="card-body">
-    						<p class="card-text text-second">{{content}}</p><hr>
-    						<p class="card-text text-third"><a href="/category/{{category}}" class="text-third text-hover-third"><i>category: {{category}} </i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
-    					</div></a>
-    			</div>
-    			<br>
-			{{/messagesCategory}}
+  <h6 class="text-first">Users results for:  {{query}}</h6>
+  <hr>
+  {{#users}}
+  <a href="/user/{{id}}" class="text-first text-hover-first"><u>{{name}}</u></a>  
+  {{/users}}
+  {{^users}}
+  <p class="text-first">No results found ┏༼ ◉ ╭╮ ◉༽┓</a> 
+  {{/users}}
+</div>
+<br>
+<div class="jumbotron pt-4">
+	<h6 class="text-first">Messages results with the category: {{query}}</h6>
+	<hr>
+	<div class="w-100">
+		{{#messagesCategory}}
+		<div class="card w-100 messages card-message">
+  		<div class="card-header text-first">
+  			<a href="/delete/message/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}
+  		</div>
+  		<a href="/message/{{id}}"><div class="card-body">
+    		<p class="card-text text-second">{{content}}</p><hr>
+    		<p class="card-text text-third"><a href="/category/{{category}}" class="text-third text-hover-third"><i>category: {{category}} </i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
+    	</div></a>
+    </div>
+    <br>
+		{{/messagesCategory}}
+    {{^messageCategory}}
+      <p class="text-first">No results found ┏༼ ◉ ╭╮ ◉༽┓</a> 
+    {{/messageCategory}}
 	 </div>
 </div>
 <br>
 <div class="jumbotron pt-4">
-    <h6 class="text-first">Message with query: {{query}}</h6>
-    <hr>
-    <div class="w-100">
-      {{#messagesContains}}
-        <div class="card w-100 messages card-message">
-            <div class="card-header text-first">
-              <a href="/delete/message/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}
-            </div>
-              <a href="/message/{{id}}"><div class="card-body">
-                <p class="card-text text-second">{{content}}</p><hr>
-                <p class="card-text text-third"><a href="/category/{{category}}" class="text-third text-hover-third"><i>category: {{category}} </i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
-              </div></a>
-          </div>
-          <br>
-      {{/messagesContains}}
+  <h6 class="text-first">Messages results with the query: {{query}}</h6>
+  <hr>
+  <div class="w-100">
+    {{#messagesContains}}
+    <div class="card w-100 messages card-message">
+      <div class="card-header text-first">
+        <a href="/delete/message/{{id}}" class="text-second text-hover-second">{{#isFromUser}}[X] {{/isFromUser}}</a><a href="/user/{{userId}}" class="text-first text-hover-first"><u>{{userName}}</u></a> | {{date}}
+      </div>
+      <a href="/message/{{id}}"><div class="card-body">
+        <p class="card-text text-second">{{content}}</p><hr>
+        <p class="card-text text-third"><a href="/category/{{category}}" class="text-third text-hover-third"><i>category: {{category}} </i></a><a href="/addHeart/message/{{id}}" class="text-third text-hover-third">💕{{heart}}</a> <a href="/addBrokenHeart/message/{{id}}" class="text-third text-hover-third">💔{{brokenheart}}</a></p>
+      </div></a>
+    </div>
+    <br>
+    {{/messagesContains}}
+    {{^messagesContains}}
+      <p class="text-first">No results found ┏༼ ◉ ╭╮ ◉༽┓</a> 
+    {{/messagesContains}}
    </div>
 </div>
 

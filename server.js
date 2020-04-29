@@ -84,7 +84,7 @@ app.get('/dashboard', is_authenticated, (req, res) => {
 /* Page user */
 app.get('/user/:id', is_authenticated, (req, res) => {
   if(res.locals.authenticated && model.fetchUserInformations(req.params.id) != undefined) {
-    var viewUser = model.canDelete(model.fetchUserInformations(req.params.id), req.session.user);
+    var viewUser = model.canUpdate(model.fetchUserInformations(req.params.id), req.session.user);
     if(viewUser == undefined) res.redirect('/');
     var user = model.fetchUserInformations(req.session.user);
     var messagesList = model.addIsFromUser(model.getMessagesFrom(req.params.id), req.session.user);
@@ -95,20 +95,32 @@ app.get('/user/:id', is_authenticated, (req, res) => {
 });
 
 app.get('/update/user/:id', is_authenticated, (req, res) => {
-  if(res.locals.authenticated && model.fetchUserInformations(req.params.id) != undefined) {
-    var viewUser = model.canDelete(model.fetchUserInformations(req.params.id), req.session.user);
-    if(viewUser == undefined) res.redirect('/');
+  var viewUser = model.canUpdate(model.fetchUserInformations(req.params.id), req.session.user);
+  if(res.locals.authenticated && model.fetchUserInformations(req.params.id) != undefined && viewUser != undefined && viewUser.canUpdate) {
     var user = model.fetchUserInformations(req.session.user);
-    var messagesList = model.addIsFromUser(model.getMessagesFrom(req.params.id), req.session.user);
-    messagesList = model.getHearts(messagesList, 0);
-    res.render('updateuser', {viewUser: viewUser, userData: user, messages: messagesList});
+    res.render('updateuser', {viewUser: viewUser, userData: user});
+  }
+  else { res.redirect('/'); }
+});
+
+app.post('/update/user/:id', is_authenticated, (req, res) => {
+  var viewUser = model.canUpdate(model.fetchUserInformations(req.params.id), req.session.user);
+  if(res.locals.authenticated && model.fetchUserInformations(req.params.id) != undefined && viewUser.canUpdate) {
+    var user = model.fetchUserInformations(req.session.user);
+    if(req.body.passwordConfirm != model.fetchUserPassword(req.params.id).password && !model.isAdmin(req.session.user)) { res.render('updateuser', {viewUser: viewUser, userData: user, error: 'password is incorrect'}); }
+    else { 
+      viewUser = model.canUpdate(model.fetchUserInformations(model.updateUser(viewUser.id, req.body.name, req.body.email, req.body.password)), req.session.user);
+      if(viewUser.id == req.session.user) { user = model.fetchUserInformations(req.session.user); }
+      res.render('updateuser', {viewUser: viewUser, userData: user, confirm: 'updated successfully'});
+    }
   }
   else { res.redirect('/'); }
 });
 
 /* Supression de l'utilisateur */
 app.get('/delete/user/:id', is_authenticated, (req, res) => {
-    if(res.locals.authenticated && model.getUser(req.params.id) != undefined) {
+  var canUpdate = model.canUpdate(model.fetchUserInformations(req.params.id), req.session.user).canUpdate;
+    if(res.locals.authenticated && model.getUser(req.params.id) != undefined && canUpdate) {
         var user = model.fetchUserInformations(req.session.user);
         var viewUser = model.fetchUserInformations(req.params.id);
         res.render('deleteuser', {viewUser: viewUser, userData: user});
@@ -117,11 +129,12 @@ app.get('/delete/user/:id', is_authenticated, (req, res) => {
 });
 
 app.post('/delete/user/:id', is_authenticated, (req, res) => {
-    if(res.locals.authenticated && model.getUser(req.params.id) != undefined && model.canDelete(model.fetchUserInformations(req.params.id), req.session.user).canDelete) {
+    var canUpdate = model.canUpdate(model.fetchUserInformations(req.params.id), req.session.user).canUpdate;
+    if(res.locals.authenticated && model.getUser(req.params.id) != undefined && canUpdate) {
         model.deleteUser(req.params.id);
         if(req.params.id == req.session.user) { req.session.user = null; }
     }
-    res.redirect('/');
+    else { res.redirect('/'); }
 });
 
 /* Envoi de message */
@@ -229,14 +242,14 @@ app.get('/leaderboards', (req, res) => {
   if (req.session.user == undefined) { res.redirect('/'); }
   var user = model.fetchUserInformations(req.session.user);
   var count = model.goCount();
-  var heartR = model.goLike();
+  //var heartR = model.goLike();
   var heartG = model.goFan();
   var messages = model.goBest();
-  var comments = model.goMment();
-  var bheartR = model.notLike();
+  //var comments = model.goMment();
+  //var bheartR = model.notLike();
   var bheartG = model.notFan();
   var badmessages = model.notBest();
-  res.render('leaderboards', {id: req.session.user, goCount: count, goLike: heartR, goFan: heartG, goBest: messages, goMment: comments, notLike: bheartR, notFan: bheartG, notBest: badmessages, userData: user}); 
+  res.render('leaderboards', {id: req.session.user, goCount: count, goFan: heartG, goBest: messages, notFan: bheartG, notBest: badmessages, userData: user}); 
 });
 
 /* Categorie */
@@ -252,9 +265,10 @@ app.get('/category/:cat', is_authenticated, (req, res) => {
 app.get('/search', is_authenticated, (req, res) => {
   if(!res.locals.authenticated) { res.redirect('/'); }
   var user = model.fetchUserInformations(req.session.user);
+  var users = model.getUsersContains(req.query["q"]);
   var messagesCategory = model.getHearts(model.addIsFromUser(model.getMessagesCategory(req.query["q"]), req.session.user), 0);
   var messagesContains = model.getHearts(model.addIsFromUser(model.getMessagesContains(req.query["q"]), req.session.user), 0);
-  res.render('search', {id: req.session.user, messagesCategory: messagesCategory, messagescontains: messagesContains, userData: user, query: req.query["q"]}); 
+  res.render('search', {id: req.session.user, messagesCategory, users : users, messagesCategory, messagesContains: messagesContains, userData: user, query: req.query["q"]}); 
 });
 
 /* déconnexion */

@@ -5,25 +5,26 @@
 </div>
 <br>
 <div class="jumbotron pt-4">
-    <h6 class="text-first">Go'Action! From {{messageData.userName}} | {{messageData.date}}</h6>
-    <hr>
-    <div class="card w-100 messages">
-      <div class="card-body">
-        <p class="card-text text-second">{{messageData.content}}</p><hr>
-        <p class="card-text text-third"><i>category: {{messageData.category}}</i> | 💕{{messageData.heart}} 💔{{messageData.brokenheart}}</p>
-      </div>
-    </div>
-  <div class="messagesBox-send">
+  <h6 class="text-first">Go'Action! From {{messageData.userName}} | {{messageData.date}}</h6>
   <hr>
-    <div class="row">
-      <div class="col-sm"> 
-        <form id="form_delete" action="/delete/message/{{messageData.id}}" method="POST">
-          <button class="btn btn-lg btn-primary btn-block bkg-third bkg-hover-third" type="submit">Delete Go'Action</button>
-        </form>
-        <a href="/"><button class="btn btn-lg btn-primary btn-block bkg-third bkg-hover-third">Go back to Dashboard</button></a>
+  <div class="card w-100 messages">
+    <div class="card-body">
+      <p class="card-text text-second">{{messageData.content}}</p>
+      <hr>
+      <p class="card-text text-third"><i>category: {{messageData.category}}</i> | 💕{{messageData.heart}} 💔{{messageData.brokenheart}}</p>
     </div>
   </div>
 </div>
-<br>
+<div class="messagesBox-send">
+  <hr>
+  <div class="row">
+    <div class="col-sm"> 
+      <form id="form_delete" action="/delete/message/{{messageData.id}}" method="POST">
+        <button class="btn btn-lg btn-primary btn-block bkg-third bkg-hover-third" type="submit">Delete Go'Action</button>
+      </form>
+      <a href="/"><button class="btn btn-lg btn-primary btn-block bkg-third bkg-hover-third">Go back to Dashboard</button></a>
+    </div>
+  </div>
+</div>
 
 {{> footer}}

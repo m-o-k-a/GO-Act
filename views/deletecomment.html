@@ -1,29 +1,27 @@
 {{> header}}
 
-<div class="jumbotron mx-auto m-0 p-0 text-center">
-  <b><a href="/leaderboards" class="text-second text-hover-second">Access the Leaderboards and see the best Go'Actors!</a></b>
-</div>
 <br>
 <div class="jumbotron pt-4">
-    <h6 class="text-first">Comment From {{commentData.userName}} | {{commentData.date}}</h6>
-    <hr>
-    <div class="card w-100 messages">
-      <div class="card-body">
-        <p class="card-text text-second">{{commentData.content}}</p><hr>
-        <p class="card-text text-third">💕{{commentData.heart}} 💔{{commentData.brokenheart}}</p>
-      </div>
-    </div>
-  <div class="messagesBox-send">
+  <h6 class="text-first">Comment From {{commentData.userName}} | {{commentData.date}}</h6>
   <hr>
-    <div class="row">
-      <div class="col-sm"> 
-        <form id="form_delete" action="/delete/comment/{{commentData.id}}" method="POST">
-          <button class="btn btn-lg btn-primary btn-block bkg-third bkg-hover-third" type="submit">Delete Comment</button>
-        </form>
-        <a href="/message/{{commentData.messageId}}"><button class="btn btn-lg btn-primary btn-block bkg-third bkg-hover-third">Go back to message</button></a>
+  <div class="card w-100 messages">
+    <div class="card-body">
+      <p class="card-text text-second">{{commentData.content}}</p>
+      <hr>
+      <p class="card-text text-third">💕{{commentData.heart}} 💔{{commentData.brokenheart}}</p>
     </div>
   </div>
 </div>
-<br>
+<div class="messagesBox-send">
+  <hr>
+  <div class="row">
+    <div class="col-sm"> 
+      <form id="form_delete" action="/delete/comment/{{commentData.id}}" method="POST">
+        <button class="btn btn-lg btn-primary btn-block bkg-third bkg-hover-third" type="submit">Delete Comment</button>
+      </form>
+      <a href="/message/{{commentData.messageId}}"><button class="btn btn-lg btn-primary btn-block bkg-third bkg-hover-third">Go back to message</button></a>
+    </div>
+  </div>
+</div>
 
 {{> footer}}

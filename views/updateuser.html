@@ -2,24 +2,25 @@
 
 <div class="jumbotron pt-4">
     <img class="mb-3 float-left" src="{{viewUser.profilePic}}" alt="" width="25" height="25">
-    <h6 class="text-first"> Go'Actor <a href="/user/{{viewUserId}}" class="text-first text-hover-first">{{viewUser.name}}</a></h6>
+    <h6 class="text-first"><a href="/user/{{viewUser.id}}" class="text-first text-hover-first">Go back to profile of {{viewUser.name}}</a></h6>
     <hr>
-    {{#viewUser.canDelete}}
-        <form class="form-update" action="/update/user/{{viewUser.id}}" method="POST">
-            <h1 class="h3 mb-3 font-weight-normal text-first">Get a brand new look !</h1>
-            <p class="text-danger">{{error}}</p>
-            <input type="text" name="name" class="messages form-control form-control-sm text-third" placeholder="{{viewUser.name}}" value="{{viewUser.name}}" required>
-            <br>
-            <input type="email" name="email" class="messages form-control form-control-sm text-third" placeholder="{{viewUser.email}}" value="{{viewUser.email}}" required>
-            <br>
-            <input type="password" name="password" class="messages form-control form-control-sm text-third" placeholder="new Password" minlength="4" required>
-            <br>
-            <input type="password" name="passwordConfirm" class="messages form-control form-control-sm text-third" placeholder="Confirm Password" minlength="4" required>
-            <br>
-            <button class="btn btn-lg btn-primary btn-block bkg-second bkg-hover-second" type="submit">Update</button>
-        </form>
-        <a href="/delete/user/{{viewUser.id}}" class="text-third text-hover-third" ><i>Delete Account..</i></a>
-    {{/viewUser.canDelete}}
+    {{#viewUser.canUpdate}}
+    <form class="form-update" action="/update/user/{{viewUser.id}}" method="POST">
+        <h1 class="h3 mb-3 font-weight-normal text-first">Get a brand new look !</h1>
+        <p class="text-danger">{{error}}</p>
+        <p class="text-success">{{confirm}}</p>
+        <input type="text" name="name" class="messages form-control form-control-sm text-third" placeholder="{{viewUser.name}}" value="{{viewUser.name}}" required>
+        <br>
+        <input type="email" name="email" class="messages form-control form-control-sm text-third" placeholder="{{viewUser.email}}" value="{{viewUser.email}}" required>
+        <br>
+        <input type="password" name="password" class="messages form-control form-control-sm text-third" placeholder="new Password" minlength="4">
+        <br>
+        <input type="password" name="passwordConfirm" class="messages form-control form-control-sm text-third" placeholder="Confirm Password" minlength="4">
+        <br>
+        <button class="btn btn-lg btn-primary btn-block bkg-second bkg-hover-second" type="submit">Update</button>
+    </form>
+    <a href="/delete/user/{{viewUser.id}}" class="text-third text-hover-third" ><i>Delete Account..</i></a>
+    {{/viewUser.canUpdate}}
     <hr>
 </div>
 

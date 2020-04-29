@@ -7,6 +7,7 @@ A web project for University on the theme "Make the world a better place"
 - Template Engine: Mustache (mustache-express)
 - better-sqlite3
 - cookie-session
+- bcrypt
 
 # Members
 - IKHLEF EDDY

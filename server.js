@@ -9,7 +9,7 @@ var app = express();
 
 //Cookie Session
 app.use(cookieSession({
-  secret: 'mot-de-passe-du-cookie',
+  secret: 'wo-ai-xiongmao',
 }));
 
 // parse form arguments in POST requests
@@ -107,7 +107,7 @@ app.post('/update/user/:id', is_authenticated, (req, res) => {
   var viewUser = model.canUpdate(model.fetchUserInformations(req.params.id), req.session.user);
   if(res.locals.authenticated && model.fetchUserInformations(req.params.id) != undefined && viewUser.canUpdate) {
     var user = model.fetchUserInformations(req.session.user);
-    if(req.body.passwordConfirm != model.fetchUserPassword(req.params.id).password && !model.isAdmin(req.session.user)) { res.render('updateuser', {viewUser: viewUser, userData: user, error: 'password is incorrect'}); }
+    if(model.comparePassword(req.body.passwordConfirm, model.fetchUserPassword(req.params.id).password) == false && !model.isAdmin(req.session.user)) { res.render('updateuser', {viewUser: viewUser, userData: user, error: 'password is incorrect'}); }
     else { 
       viewUser = model.canUpdate(model.fetchUserInformations(model.updateUser(viewUser.id, req.body.name, req.body.email, req.body.password)), req.session.user);
       if(viewUser.id == req.session.user) { user = model.fetchUserInformations(req.session.user); }
@@ -134,7 +134,7 @@ app.post('/delete/user/:id', is_authenticated, (req, res) => {
         model.deleteUser(req.params.id);
         if(req.params.id == req.session.user) { req.session.user = null; }
     }
-    else { res.redirect('/'); }
+    res.redirect('/');
 });
 
 /* Envoi de message */

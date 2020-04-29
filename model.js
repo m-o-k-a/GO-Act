@@ -3,19 +3,38 @@
 const Sqlite = require('better-sqlite3');
 let db = new Sqlite('db.sqlite');
 
+//Encrypt 
+const bcrypt = require('bcrypt');
+
 /* Function about connecting, create account */
 exports.login = (email, password) => {
-  var login = db.prepare('SELECT id FROM users WHERE (email = ? AND password = ?)').get(email, password);
+  if(!comparePassword(password, db.prepare('SELECT password FROM users WHERE email = ?').get(email).password)) return undefined;
+  var login = db.prepare('SELECT id FROM users WHERE (email = ?)').get(email);
   if(login == undefined) return undefined;
   return login.id;
 }
 
 exports.new_user = (name, email, password) => {
-  //car auto increment marche pas
   var rowCount = db.prepare('SELECT COUNT(id) count FROM USERS');
-  var add = db.prepare('INSERT INTO users (id, name, email, password, lvl, fanlvl, heartReceived, brokenHeartReceived, heartGiven, brokenheartGiven, messageCount, commentCount, userCategory) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').run(rowCount.get().count, name, email, password, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  var cryptedPassword = cryptPassword(password);
+  var add = db.prepare('INSERT INTO users (id, name, email, password, userCategory) VALUES(?, ?, ?, ?, ?)').run(rowCount.get().count, name, email, cryptedPassword, 0);
   return add.lastInsertRowid-1;
 }
+
+/* Function about data encryption */
+function cryptPassword(password) {
+  var saved_hash = bcrypt.hashSync(password, 10);
+  return saved_hash;
+}
+
+exports.comparePassword = (password, saved_hash) => {
+  return bcrypt.compareSync(password, saved_hash) == true;
+};
+
+function comparePassword(password, saved_hash) {
+  return bcrypt.compareSync(password, saved_hash) == true;
+};
+
 
 /* Function about user data */
 exports.fetchUserInformations = (id) => {
@@ -198,7 +217,7 @@ exports.canUpdate = (viewUser, id) => {
 
 exports.updateUser = (id, name, email, password) => {
   if(password === "") { db.prepare('UPDATE  users SET name = ?, email = ? WHERE (id = ?)').run(name, email, id); }
-  else { db.prepare('UPDATE  users SET name = ?, email = ?, password = ? WHERE (id = ?)').run(name, email, password, id); }
+  else { db.prepare('UPDATE  users SET name = ?, email = ?, password = ? WHERE (id = ?)').run(name, email, cryptPassword(password), id); }
   db.prepare('UPDATE  messages SET userName = ? WHERE (userId = ?)').run(name, id);
   db.prepare('UPDATE  comments SET userName = ? WHERE (userId = ?)').run(name, id);
   return id;

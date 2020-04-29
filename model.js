@@ -211,7 +211,7 @@ exports.isAdmin = (id) => {
 
 exports.canUpdate = (viewUser, id) => {
   var usercategory = db.prepare('SELECT usercategory FROM users WHERE (id = ?)').get(id).userCategory;
-  viewUser.canUpdate = (id == viewUser.id || (usercategory == 2 && viewUser.id > 2) && viewUser.id != 0); 
+  viewUser.canUpdate = (id == viewUser.id || (usercategory == 2 && viewUser.userCategory < 2) && viewUser.id != 0); 
   return viewUser;
 }
 

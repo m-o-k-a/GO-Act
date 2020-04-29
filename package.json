@@ -1,0 +1,28 @@
+{
+  "name": "go-act",
+  "version": "1.0.0",
+  "description": "A web project for University on the theme \"Make the world a better place\"",
+  "main": "server.js",
+  "dependencies": {
+    "bcrypt": "^4.0.1",
+    "better-sqlite3": "^6.0.1",
+    "cookie-session": "^1.4.0",
+    "express.js": "^1.0.0",
+    "mustache-express": "^1.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "true",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m-o-k-a/GO-Act.git"
+  },
+  "author": "Ikhlef Eddy, Yun Eunsun",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/m-o-k-a/GO-Act/issues"
+  },
+  "homepage": "https://github.com/m-o-k-a/GO-Act#readme"
+}

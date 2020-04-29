@@ -98,20 +98,23 @@ app.get('/update/user/:id', is_authenticated, (req, res) => {
   var viewUser = model.canUpdate(model.fetchUserInformations(req.params.id), req.session.user);
   if(res.locals.authenticated && model.fetchUserInformations(req.params.id) != undefined && viewUser != undefined && viewUser.canUpdate) {
     var user = model.fetchUserInformations(req.session.user);
-    res.render('updateuser', {viewUser: viewUser, userData: user});
+    var isAdmin = (model.isAdmin(req.session.user) && req.params.id != 0) || (model.isAdmin(req.session.user) && model.fetchUserCategory != 2) || req.params.id == 0;
+    res.render('updateuser', {viewUser: viewUser, userData: user, isAdmin : isAdmin});
   }
   else { res.redirect('/'); }
 });
 
 app.post('/update/user/:id', is_authenticated, (req, res) => {
   var viewUser = model.canUpdate(model.fetchUserInformations(req.params.id), req.session.user);
+  var isAdmin = (model.isAdmin(req.session.user) && req.params.id != 0) || (model.isAdmin(req.session.user) && model.fetchUserCategory != 2) || req.params.id == 0;
   if(res.locals.authenticated && model.fetchUserInformations(req.params.id) != undefined && viewUser.canUpdate) {
     var user = model.fetchUserInformations(req.session.user);
-    if(model.comparePassword(req.body.passwordConfirm, model.fetchUserPassword(req.params.id).password) == false && !model.isAdmin(req.session.user)) { res.render('updateuser', {viewUser: viewUser, userData: user, error: 'password is incorrect'}); }
+    if(model.comparePassword(req.body.passwordConfirm, model.fetchUserPassword(req.params.id).password) == false && !model.isAdmin(req.session.user)) { res.render('updateuser', {viewUser: viewUser, userData: user, isAdmin : isAdmin, error: 'password is incorrect'}); }
     else { 
-      viewUser = model.canUpdate(model.fetchUserInformations(model.updateUser(viewUser.id, req.body.name, req.body.email, req.body.password)), req.session.user);
+      viewUser = model.canUpdate(model.fetchUserInformations(model.updateUser(viewUser.id, req.body.name, req.body.email, req.body.password, parseInt(req.body.userCategory)%3)), req.session.user);
       if(viewUser.id == req.session.user) { user = model.fetchUserInformations(req.session.user); }
-      res.render('updateuser', {viewUser: viewUser, userData: user, confirm: 'updated successfully'});
+      isAdmin = (model.isAdmin(req.session.user) && req.params.id != 0) || (model.isAdmin(req.session.user) && model.fetchUserCategory != 2) || req.params.id == 0;
+      res.render('updateuser', {viewUser: viewUser, userData: user, isAdmin : isAdmin, confirm: 'updated successfully'});
     }
   }
   else { res.redirect('/'); }
@@ -120,7 +123,7 @@ app.post('/update/user/:id', is_authenticated, (req, res) => {
 /* Supression de l'utilisateur */
 app.get('/delete/user/:id', is_authenticated, (req, res) => {
   var canUpdate = model.canUpdate(model.fetchUserInformations(req.params.id), req.session.user).canUpdate;
-    if(res.locals.authenticated && model.getUser(req.params.id) != undefined && canUpdate) {
+    if(res.locals.authenticated && model.getUser(req.params.id) != undefined && canUpdate && req.params.id != 0) {
         var user = model.fetchUserInformations(req.session.user);
         var viewUser = model.fetchUserInformations(req.params.id);
         res.render('deleteuser', {viewUser: viewUser, userData: user});

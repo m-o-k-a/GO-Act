@@ -17,6 +17,11 @@
         <br>
         <input type="password" name="passwordConfirm" class="messages form-control form-control-sm text-third" placeholder="Confirm Password" minlength="4">
         <br>
+        {{#isAdmin}}
+        <p class="text-danger">Change the user Category <i>[0: User, 1: Moderatorn 2: Administrator /!\]%3</i></p>
+        <input type="number" name="userCategory" class="messages form-control form-control-sm text-third w-25" value="{{viewUser.userCategory}}" minlength="1" maxlength="1" required>
+        <br>
+        {{/isAdmin}}
         <button class="btn btn-lg btn-primary btn-block bkg-second bkg-hover-second" type="submit">Update</button>
     </form>
     <a href="/delete/user/{{viewUser.id}}" class="text-third text-hover-third" ><i>Delete Account..</i></a>

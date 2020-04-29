@@ -211,13 +211,13 @@ exports.isAdmin = (id) => {
 
 exports.canUpdate = (viewUser, id) => {
   var usercategory = db.prepare('SELECT usercategory FROM users WHERE (id = ?)').get(id).userCategory;
-  viewUser.canUpdate = (id == viewUser.id || usercategory == 2);
+  viewUser.canUpdate = (id == viewUser.id || (usercategory == 2 && viewUser.id > 2) && viewUser.id != 0); 
   return viewUser;
 }
 
-exports.updateUser = (id, name, email, password) => {
-  if(password === "") { db.prepare('UPDATE  users SET name = ?, email = ? WHERE (id = ?)').run(name, email, id); }
-  else { db.prepare('UPDATE  users SET name = ?, email = ?, password = ? WHERE (id = ?)').run(name, email, cryptPassword(password), id); }
+exports.updateUser = (id, name, email, password, category) => {
+  if(password === "") { db.prepare('UPDATE  users SET name = ?, email = ?, userCategory = ? WHERE (id = ?)').run(name, email, category, id); }
+  else { db.prepare('UPDATE  users SET name = ?, email = ?, password = ?, userCategory = ? WHERE (id = ?)').run(name, email, cryptPassword(password), category, id); }
   db.prepare('UPDATE  messages SET userName = ? WHERE (userId = ?)').run(name, id);
   db.prepare('UPDATE  comments SET userName = ? WHERE (userId = ?)').run(name, id);
   return id;

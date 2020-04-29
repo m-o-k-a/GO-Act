@@ -191,8 +191,8 @@ exports.getHearts = (messages, isComment) => {
 /* Function about update user data */
 exports.addIsFromUser = (messages, id) => {
   var usercategory = db.prepare('SELECT usercategory FROM users WHERE (id = ?)').get(id).userCategory;
-  try { messages.forEach((item) => (item.isFromUser = (id == item.userId || usercategory == 2 || (usercategory == 1 && fetchUserCategory(item.userId).userCategory == 0)))); }
-  catch(error) { messages.isFromUser = (id == messages.userId || usercategory == 2 || (usercategory == 1 && fetchUserCategory(messages.userId).userCategory == 0)); }
+  try { messages.forEach((item) => (item.isFromUser = (id == item.userId || (usercategory == 2 && fetchUserCategory(item.userId).userCategory < 2) || (usercategory == 1 && fetchUserCategory(item.userId).userCategory < 1)))); }
+  catch(error) { messages.isFromUser = (id == messages.userId || (usercategory == 2 && fetchUserCategory(messages.userId).userCategory < 2) || (usercategory == 1 && fetchUserCategory(messages.userId).userCategory < 1)); }
   return messages;
 }
 

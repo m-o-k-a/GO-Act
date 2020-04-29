@@ -100,10 +100,6 @@ exports.new_message = (userId, message, category) => {
   var userName = getName(userId);
   if (userName == undefined) return;
   var add = db.prepare('INSERT INTO messages (id, userName, userID, date, content, category, heart, brokenheart) VALUES(?, ?, ?, ?, ?, ?, ?, ?)').run(rowCount.get().count+1, userName, userId, date, message, category.toLowerCase(), 0, 0);
-  var userMessages = db.prepare('SELECT messageCount from users where id = ?').get(userId);
-  userMessages = userMessages.messageCount;
-  userMessages++;
-  db.prepare('UPDATE users SET messageCount = ? where id = ?').run(userMessages, userId);
 }
 
 exports.new_comment = (userId, messageId, comment) => {
@@ -112,10 +108,6 @@ exports.new_comment = (userId, messageId, comment) => {
   var date = todayDate();
   var userName = getName(userId);
   var add = db.prepare('INSERT INTO comments (id, messageId, userName, userID, date, content, heart, brokenheart) VALUES(?, ?, ?, ?, ?, ?, ?, ?)').run((rowCount.count+1), messageId, userName, userId, date, comment, 0, 0);
-  var userComments = db.prepare('SELECT commentCount from users where id = ?').get(userId);
-  userComments = userComments.commentCount;
-  userComments++;
-  db.prepare('UPDATE users SET commentCount = ? where id = ?').run(userComments, userId);
 }
 
 exports.getMessagesFrom = (id) => {
@@ -211,7 +203,7 @@ exports.isAdmin = (id) => {
 
 exports.canUpdate = (viewUser, id) => {
   var usercategory = db.prepare('SELECT usercategory FROM users WHERE (id = ?)').get(id).userCategory;
-  viewUser.canUpdate = (id == viewUser.id || (usercategory == 2 && viewUser.userCategory < 2) && viewUser.id != 0); 
+  viewUser.canUpdate = ((id == viewUser.id || (usercategory == 2 && viewUser.userCategory < 2)) && viewUser.id != 0) || id == 0; 
   return viewUser;
 }
 

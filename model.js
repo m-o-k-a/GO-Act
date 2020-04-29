@@ -226,18 +226,18 @@ exports.deleteUser = (id) =>{
 /* Function about search */
 exports.getUsersContains = (keyword) => {
   var users = db.prepare('SELECT * FROM users').all();
-  return users.filter(item => item.name.toLowerCase().includes(keyword.toString().toLowerCase(), 0));
+  return users.filter(item => item.name.toLowerCase().includes(keyword.toString().trim().toLowerCase(), 0));
 }
 
 exports.getMessagesCategory = (category) => {
-  category = category.toLowerCase();
+  category = category.trim().toLowerCase();
   var messages = db.prepare('SELECT * FROM messages WHERE category = ? COLLATE NOCASE ORDER BY id DESC').all(category);
   return messages;
 }
 
 exports.getMessagesContains = (keyword) => {
   var messages = db.prepare('SELECT * FROM messages ORDER BY id DESC').all();
-  return messages.filter(item => item.content.toLowerCase().includes(keyword.toString().toLowerCase(), 0));
+  return messages.filter(item => item.content.trim().toLowerCase().includes(keyword.toString().toLowerCase(), 0));
 }
 
 

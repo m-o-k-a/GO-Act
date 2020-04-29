@@ -8,9 +8,9 @@ const bcrypt = require('bcrypt');
 
 /* Function about connecting, create account */
 exports.login = (email, password) => {
-  if(!comparePassword(password, db.prepare('SELECT password FROM users WHERE email = ?').get(email).password)) return undefined;
   var login = db.prepare('SELECT id FROM users WHERE (email = ?)').get(email);
   if(login == undefined) return undefined;
+  if(!comparePassword(password, db.prepare('SELECT password FROM users WHERE email = ?').get(email).password)) return undefined;
   return login.id;
 }
 

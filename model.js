@@ -111,7 +111,7 @@ exports.new_comment = (userId, messageId, comment) => {
 }
 
 exports.getMessagesFrom = (id) => {
-  var messagesfrom = db.prepare('SELECT * FROM messages WHERE userId = ?').all(id);
+  var messagesfrom = db.prepare('SELECT * FROM messages WHERE userId = ? ORDER BY id DESC').all(id);
   if (messagesfrom != undefined) return messagesfrom;
 }
 

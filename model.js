@@ -15,9 +15,9 @@ exports.login = (email, password) => {
 }
 
 exports.new_user = (name, email, password) => {
-  var rowCount = db.prepare('SELECT COUNT(id) count FROM USERS');
+  var rowCount = db.prepare('SELECT MAX(id) count FROM USERS');
   var cryptedPassword = cryptPassword(password);
-  var add = db.prepare('INSERT INTO users (id, name, email, password, userCategory) VALUES(?, ?, ?, ?, ?)').run(rowCount.get().count, name, email, cryptedPassword, 0);
+  var add = db.prepare('INSERT INTO users (id, name, email, password, userCategory) VALUES(?, ?, ?, ?, ?)').run(rowCount.get().count+1, name, email, cryptedPassword, 0);
   return add.lastInsertRowid-1;
 }
 

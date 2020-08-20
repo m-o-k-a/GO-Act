@@ -4,7 +4,7 @@
   "description": "A web project for University on the theme \"Make the world a better place\"",
   "main": "server.js",
   "dependencies": {
-    "bcrypt": "^4.0.1",
+    "bcrypt": "^5.0.0",
     "better-sqlite3": "^6.0.1",
     "cookie-session": "^1.4.0",
     "express.js": "^1.0.0",
